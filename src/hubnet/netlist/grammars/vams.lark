@@ -1,0 +1,116 @@
+// Verilog-AMS netlist grammar (LALR)
+// Expects pre-processed input: comments stripped, `directives extracted,
+// analog blocks replaced with __analog_placeholder__ N ;
+// Semicolons terminate statements. All whitespace ignored.
+
+start: toplevel_item*
+
+?toplevel_item: module_def
+              | nature_def
+              | discipline_def
+              | paramset_def
+
+// ── Module definition ─────────────────────────────────────────────────
+module_def: _MODULE_KW IDENT port_list? _SEMI module_body _ENDMODULE_KW
+_MODULE_KW: "module"
+_ENDMODULE_KW: "endmodule"
+
+port_list: "(" port_item ("," port_item)* ")"
+port_item: IDENT
+
+module_body: module_stmt*
+?module_stmt: port_dir_decl
+            | typed_parameter_decl
+            | typed_localparam_decl
+            | untyped_parameter_decl
+            | untyped_localparam_decl
+            | discipline_decl
+            | ground_stmt
+            | instance_stmt
+            | analog_placeholder
+
+// ── Port direction declarations ───────────────────────────────────────
+port_dir_decl: PORT_DIR port_name_list _SEMI
+PORT_DIR.2: "input" | "output" | "inout"
+
+port_name_list: IDENT ("," IDENT)*
+
+// ── Discipline declaration on nets/ports ──────────────────────────────
+discipline_decl: IDENT port_name_list _SEMI
+
+// ── Parameter / localparam declarations ───────────────────────────────
+// Typed: `parameter real r = 50;` — PARAM_TYPE_KW takes priority over IDENT
+// Untyped: `parameter r = 50;` — no type keyword
+typed_parameter_decl: _PARAMETER_KW PARAM_TYPE_KW param_assign_list _SEMI
+untyped_parameter_decl: _PARAMETER_KW param_assign_list _SEMI
+typed_localparam_decl: _LOCALPARAM_KW PARAM_TYPE_KW param_assign_list _SEMI
+untyped_localparam_decl: _LOCALPARAM_KW param_assign_list _SEMI
+_PARAMETER_KW: "parameter"
+_LOCALPARAM_KW: "localparam"
+PARAM_TYPE_KW.2: "real" | "integer" | "string"
+
+param_assign_list: param_assign ("," param_assign)*
+param_assign: IDENT "=" param_value
+
+?param_value: SI_NUMBER  -> pvalue_number
+            | IDENT      -> pvalue_ident
+            | QSTRING    -> pvalue_string
+
+// ── Ground statement ──────────────────────────────────────────────────
+ground_stmt: _GROUND_KW IDENT _SEMI
+_GROUND_KW: "ground"
+
+// ── Instance statement ────────────────────────────────────────────────
+// module_type #(.p1(v1), .p2(v2)) inst_name (.port1(net1), .port2(net2)) ;
+// module_type #(v1, v2) inst_name (net1, net2) ;
+// module_type inst_name (.port1(net1), .port2(net2)) ;
+// module_type inst_name (net1, net2) ;
+instance_stmt: IDENT param_override? IDENT port_conn _SEMI
+
+param_override: "#" "(" override_item ("," override_item)* ")"
+?override_item: named_override | positional_override
+named_override: "." IDENT "(" param_value ")"
+positional_override: param_value
+
+port_conn: "(" conn_item ("," conn_item)* ")"
+?conn_item: named_conn | positional_conn
+named_conn: "." IDENT "(" IDENT ")"
+positional_conn: IDENT
+
+// ── Analog block placeholder ──────────────────────────────────────────
+analog_placeholder: _ANALOG_PH SI_NUMBER _SEMI
+_ANALOG_PH: "__analog_placeholder__"
+
+// ── Nature definition ─────────────────────────────────────────────────
+nature_def: _NATURE_KW IDENT _SEMI nature_body _ENDNATURE_KW
+_NATURE_KW: "nature"
+_ENDNATURE_KW: "endnature"
+nature_body: nature_attr*
+nature_attr: IDENT "=" param_value _SEMI
+
+// ── Discipline definition ─────────────────────────────────────────────
+discipline_def: _DISCIPLINE_KW IDENT _SEMI discipline_body _ENDDISCIPLINE_KW
+_DISCIPLINE_KW: "discipline"
+_ENDDISCIPLINE_KW: "enddiscipline"
+discipline_body: discipline_attr*
+?discipline_attr: discipline_nature_attr | discipline_domain_attr
+discipline_nature_attr: IDENT IDENT _SEMI
+discipline_domain_attr: _DOMAIN_KW IDENT _SEMI
+_DOMAIN_KW: "domain"
+
+// ── Paramset definition ───────────────────────────────────────────────
+paramset_def: _PARAMSET_KW IDENT IDENT _SEMI paramset_body _ENDPARAMSET_KW
+_PARAMSET_KW: "paramset"
+_ENDPARAMSET_KW: "endparamset"
+paramset_body: paramset_param*
+paramset_param: _PARAMETER_KW PARAM_TYPE_KW param_assign _SEMI paramset_constraint*
+              | _PARAMETER_KW param_assign _SEMI paramset_constraint*
+paramset_constraint: "." IDENT "=" param_value _SEMI
+
+// ── Terminals ─────────────────────────────────────────────────────────
+_SEMI: ";"
+SI_NUMBER: /[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?(?:meg|mil|[TtGgKkMmUuNnPpFfAa])?/
+IDENT: /[A-Za-z_][A-Za-z0-9_.\[\]:!$#]*/
+QSTRING: /\"[^\"]*\"/ | /'[^']*'/
+
+%ignore /[ \t\r\n]+/
