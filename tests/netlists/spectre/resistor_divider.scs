@@ -1,0 +1,4 @@
+subckt divider (vin vout gnd)
+R1 (vin vout) resistor value=10k
+R2 (vout gnd) resistor value=10k
+ends divider

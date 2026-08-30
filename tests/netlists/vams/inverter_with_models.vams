@@ -1,0 +1,5 @@
+module cmos_inverter (in_, out, vdd, vss);
+  inout in_, out, vdd, vss;
+  mosfet #(.L(0.18u), .W(1u)) M1 (.d(out), .g(in_), .s(vdd), .b(vdd));
+  mosfet #(.L(0.18u), .W(0.5u)) M2 (.d(out), .g(in_), .s(vss), .b(vss));
+endmodule

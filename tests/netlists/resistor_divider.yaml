@@ -1,11 +1,14 @@
+directives: []
 domain: spice
 ext_modules:
 - domain: spice
+  kind: 1
   name: resistor
   parameters: []
   ports:
   - cross_section: ''
     direction: 0
+    discipline: ''
     domain: 1
     name: p
     properties: {}
@@ -13,6 +16,7 @@ ext_modules:
     width: 0
   - cross_section: ''
     direction: 0
+    discipline: ''
     domain: 1
     name: n
     properties: {}
@@ -64,35 +68,55 @@ modules:
       instance_name: R2
       port_name: n
     weight: 0
+  directives: []
   model_interfaces: []
   module_references:
   - class_name: ''
+    model_name: ''
     module_name: resistor
     name: R1
     parameter_overrides:
       value:
-        model_ref: null
-        prefixed_value:
-          double_value: 10.0
-          prefix: 15
-    parameter_values: []
+        default_value:
+          expression: null
+          int_value: null
+          model_ref: null
+          prefixed_value:
+            double_value: 10.0
+            prefix: 15
+          string_value: null
+        description: ''
+        name: value
+        properties: {}
+        uid: 0
+    parameters: []
     properties: {}
   - class_name: ''
+    model_name: ''
     module_name: resistor
     name: R2
     parameter_overrides:
       value:
-        model_ref: null
-        prefixed_value:
-          double_value: 10.0
-          prefix: 15
-    parameter_values: []
+        default_value:
+          expression: null
+          int_value: null
+          model_ref: null
+          prefixed_value:
+            double_value: 10.0
+            prefix: 15
+          string_value: null
+        description: ''
+        name: value
+        properties: {}
+        uid: 0
+    parameters: []
     properties: {}
   name: divider
   parameters: []
   ports:
   - cross_section: ''
     direction: 0
+    discipline: ''
     domain: 1
     name: vin
     properties: {}
@@ -100,6 +124,7 @@ modules:
     width: 0
   - cross_section: ''
     direction: 0
+    discipline: ''
     domain: 1
     name: vout
     properties: {}
@@ -107,6 +132,7 @@ modules:
     width: 0
   - cross_section: ''
     direction: 0
+    discipline: ''
     domain: 1
     name: gnd
     properties: {}
@@ -114,6 +140,7 @@ modules:
     width: 0
   properties: {}
   uid: 0
-name: resistor_divider
+name: ''
 properties: {}
+simulation: null
 top_module: divider

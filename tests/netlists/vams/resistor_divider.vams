@@ -1,0 +1,5 @@
+module divider (vin, vout, gnd);
+  inout vin, vout, gnd;
+  resistor #(.value(10k)) R1 (.p(vin), .n(vout));
+  resistor #(.value(10k)) R2 (.p(vout), .n(gnd));
+endmodule

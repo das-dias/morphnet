@@ -1,0 +1,8 @@
+subckt inverter (in_ out vdd vss)
+R1 (in_ out) resistor value=1k
+R2 (out vss) resistor value=1k
+ends inverter
+subckt buffer (a b vdd vss)
+X1 (a mid vdd vss) inverter
+X2 (mid b vdd vss) inverter
+ends buffer

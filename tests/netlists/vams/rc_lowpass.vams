@@ -1,0 +1,5 @@
+module rc_lowpass (in_, out, gnd);
+  inout in_, out, gnd;
+  resistor #(.value(1k)) R1 (.p(in_), .n(out));
+  capacitor #(.value(100p)) C1 (.p(out), .n(gnd));
+endmodule

@@ -1,0 +1,10 @@
+module inverter (in_, out, vdd, vss);
+  inout in_, out, vdd, vss;
+  resistor #(.value(1k)) R1 (.p(in_), .n(out));
+  resistor #(.value(1k)) R2 (.p(out), .n(vss));
+endmodule
+module buffer (a, b, vdd, vss);
+  inout a, b, vdd, vss;
+  inverter X1 (.in_(a), .out(mid), .vdd(vdd), .vss(vss));
+  inverter X2 (.in_(mid), .out(b), .vdd(vdd), .vss(vss));
+endmodule
