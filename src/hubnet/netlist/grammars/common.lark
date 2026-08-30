@@ -1,0 +1,24 @@
+// Shared terminals for SPICE / Spectre / Xyce grammars
+
+// SI-prefixed number:  10k  2.2u  100meg  -3.14p  .5n
+SI_SUFFIX: /meg/i | /mil/i | /[TtGgKkMmUuNnPpFfAa]/
+SI_NUMBER: /[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?/ SI_SUFFIX?
+
+// Identifiers: allow letters, digits, underscore, dot, colon, brackets, bang
+// Must start with a letter, underscore, or (for SPICE net names) a digit
+IDENT: /[A-Za-z_][A-Za-z0-9_.\[\]:!#]*/
+
+// Net names can start with digits (e.g. "0" for ground)
+NET_NAME: /[A-Za-z0-9_.\[\]:!#]+/
+
+// Quoted strings (single or double)
+QSTRING: /\"[^\"]*\"/ | /'[^']*'/
+
+// File paths (for .include directives) — unquoted or quoted
+FILE_PATH: QSTRING | /[^\s]+/
+
+// Whitespace: spaces and tabs only (newlines are significant)
+WS_INLINE: /[ \t]+/
+
+// Newline
+NL: /[\r\n]+/

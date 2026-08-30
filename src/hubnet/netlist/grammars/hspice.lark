@@ -1,0 +1,165 @@
+// HSPICE netlist grammar
+// Extends SPICE with: .MACRO/.EOM, quoted expressions, mil/x suffixes, .FFT.
+// Expects pre-processed input: continuations joined, comments stripped.
+// Uses Earley parser.
+
+start: _NL* (statement _NL+)* statement? _NL*
+
+?statement: subckt_def
+          | macro_def
+          | end_stmt
+          | model_stmt
+          | param_stmt
+          | include_stmt
+          | lib_stmt
+          | global_stmt
+          | option_stmt
+          | op_stmt
+          | tran_stmt
+          | ac_stmt
+          | dc_stmt
+          | noise_stmt
+          | tf_stmt
+          | sens_stmt
+          | pz_stmt
+          | disto_stmt
+          | four_stmt
+          | fft_stmt
+          | print_stmt
+          | plot_stmt
+          | probe_stmt
+          | meas_stmt
+          | ic_stmt
+          | nodeset_stmt
+          | temp_stmt
+          | instance_stmt
+
+// ── Subcircuit definition ──────────────────────────────────────────────
+subckt_def: SUBCKT_KW IDENT port_decl* param_assign* _NL+ subckt_body ENDS_KW IDENT?
+SUBCKT_KW: /\.subckt/i
+ENDS_KW: /\.ends/i
+
+// ── .MACRO / .EOM (HSPICE alternative to .SUBCKT/.ENDS) ───────────────
+macro_def: MACRO_KW IDENT port_decl* param_assign* _NL+ subckt_body EOM_KW IDENT?
+MACRO_KW: /\.macro/i
+EOM_KW: /\.eom/i
+
+subckt_body: (statement _NL+)*
+
+port_decl: IDENT
+
+// ── Device / subcircuit instance ───────────────────────────────────────
+instance_stmt: IDENT token+ param_assign*
+
+token: SI_NUMBER -> token_number
+     | IDENT    -> token_ident
+
+// ── .model statement ───────────────────────────────────────────────────
+model_stmt: MODEL_KW IDENT IDENT param_assign*
+MODEL_KW: /\.model/i
+
+// ── .param statement ───────────────────────────────────────────────────
+param_stmt: PARAM_KW param_assign+
+PARAM_KW: /\.param/i
+
+// ── .include / .lib ────────────────────────────────────────────────────
+include_stmt: INCLUDE_KW FILE_PATH
+INCLUDE_KW: /\.include/i
+
+lib_stmt: LIB_KW FILE_PATH IDENT?
+LIB_KW: /\.lib/i
+
+// ── .global ────────────────────────────────────────────────────────────
+global_stmt: GLOBAL_KW IDENT+
+GLOBAL_KW: /\.global/i
+
+// ── .option ────────────────────────────────────────────────────────────
+option_stmt: OPTION_KW param_assign+
+OPTION_KW: /\.option/i
+
+// ── .end ───────────────────────────────────────────────────────────────
+end_stmt: END_KW
+END_KW: /\.end\b/i
+
+// ── Analysis statements ────────────────────────────────────────────────
+op_stmt: OP_KW
+OP_KW: /\.op/i
+
+tran_stmt: TRAN_KW sim_token+ param_assign*
+TRAN_KW: /\.tran/i
+
+ac_stmt: AC_KW sim_token+ param_assign*
+AC_KW: /\.ac/i
+
+dc_stmt: DC_KW sim_token+ param_assign*
+DC_KW: /\.dc/i
+
+noise_stmt: NOISE_KW sim_token+ param_assign*
+NOISE_KW: /\.noise/i
+
+tf_stmt: TF_KW sim_token+
+TF_KW: /\.tf/i
+
+sens_stmt: SENS_KW sim_token+
+SENS_KW: /\.sens/i
+
+pz_stmt: PZ_KW sim_token+
+PZ_KW: /\.pz/i
+
+disto_stmt: DISTO_KW sim_token+
+DISTO_KW: /\.disto/i
+
+four_stmt: FOUR_KW sim_token+
+FOUR_KW: /\.four/i
+
+fft_stmt: FFT_KW sim_token+ param_assign*
+FFT_KW: /\.fft/i
+
+// ── Output requests ────────────────────────────────────────────────────
+print_stmt: PRINT_KW sim_token+
+PRINT_KW: /\.print/i
+
+plot_stmt: PLOT_KW sim_token+
+PLOT_KW: /\.plot/i
+
+probe_stmt: PROBE_KW sim_token+
+PROBE_KW: /\.probe/i
+
+// ── Measurements ───────────────────────────────────────────────────────
+meas_stmt: MEAS_KW sim_token+ param_assign*
+MEAS_KW: /\.meas(?:ure)?/i
+
+// ── Initial conditions ─────────────────────────────────────────────────
+ic_stmt: IC_KW ic_assign+
+IC_KW: /\.ic/i
+
+nodeset_stmt: NODESET_KW ic_assign+
+NODESET_KW: /\.nodeset/i
+
+ic_assign: OUTPUT_VAR "=" param_value
+
+// ── Temperature ────────────────────────────────────────────────────────
+temp_stmt: TEMP_KW sim_token+
+TEMP_KW: /\.temp/i
+
+// ── Simulation token (supports output variables like V(out)) ───────────
+sim_token: SI_NUMBER  -> token_number
+         | OUTPUT_VAR -> token_output_var
+         | IDENT      -> token_ident
+
+// ── Parameter assignment: name=value ───────────────────────────────────
+param_assign: IDENT "=" param_value
+?param_value: SI_NUMBER  -> pvalue_number
+            | IDENT      -> pvalue_ident
+            | QSTRING    -> pvalue_qstring
+
+// ── Terminals ──────────────────────────────────────────────────────────
+SI_NUMBER: /[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?(?:meg|mil|x|[TtGgKkMmUuNnPpFfAa])?/
+OUTPUT_VAR: /[A-Za-z_]\w*\([^)]*\)/
+IDENT: /[A-Za-z_][A-Za-z0-9_.\[\]:!#]*/
+QSTRING: /\"[^\"]*\"/ | /'[^']*'/
+FILE_PATH: /\"[^\"]*\"/ | /'[^']*'/ | /[^\s\"']+/
+
+NL: /[\r\n]+/
+_NL: NL
+%ignore /[ \t]+/

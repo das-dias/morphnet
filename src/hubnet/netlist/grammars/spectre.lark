@@ -1,0 +1,71 @@
+// Spectre netlist grammar (LALR)
+// Expects pre-processed input: comments stripped, continuations joined,
+// semicolons injected after each non-block/non-structural statement.
+
+start: toplevel_item*
+
+?toplevel_item: subckt_def
+              | instance_stmt _SEMI
+              | model_stmt _SEMI
+              | parameters_stmt _SEMI
+              | include_stmt _SEMI
+              | save_stmt _SEMI
+              | section_def
+
+// ── Subcircuit definition ──────────────────────────────────────────────
+subckt_def: _SUBCKT_KW IDENT "(" port_decl* ")" param_assign* subckt_body _ENDS_KW IDENT?
+_SUBCKT_KW: "subckt"
+_ENDS_KW: "ends"
+
+subckt_body: body_item*
+?body_item: instance_stmt _SEMI
+          | model_stmt _SEMI
+          | parameters_stmt _SEMI
+          | include_stmt _SEMI
+          | save_stmt _SEMI
+          | subckt_def
+
+port_decl: IDENT
+
+// ── Instance: name (net1 net2 ...) cellname param=val ... ──────────────
+instance_stmt: IDENT "(" net_ref* ")" IDENT param_assign*
+
+net_ref: NET_NAME
+
+// ── model statement ────────────────────────────────────────────────────
+model_stmt: _MODEL_KW IDENT IDENT "(" param_assign* ")"
+_MODEL_KW: "model"
+
+// ── parameters block ───────────────────────────────────────────────────
+parameters_stmt: _PARAMETERS_KW param_assign+
+_PARAMETERS_KW: "parameters"
+
+// ── include ────────────────────────────────────────────────────────────
+include_stmt: _INCLUDE_KW FILE_PATH
+_INCLUDE_KW: "include"
+
+// ── section/endsection (library sections) ──────────────────────────────
+section_def: _SECTION_KW "=" IDENT section_body _ENDSECTION_KW
+_SECTION_KW: "section"
+_ENDSECTION_KW: "endsection"
+section_body: toplevel_item*
+
+// ── save statement ─────────────────────────────────────────────────────
+save_stmt: _SAVE_KW net_ref+
+_SAVE_KW: "save"
+
+// ── Parameter assignment: name=value ───────────────────────────────────
+param_assign: IDENT "=" param_value
+?param_value: SI_NUMBER  -> pvalue_number
+            | IDENT      -> pvalue_ident
+            | QSTRING    -> pvalue_string
+
+// ── Terminals ──────────────────────────────────────────────────────────
+_SEMI: ";"
+SI_NUMBER: /[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?(?:meg|mil|[TtGgKkMmUuNnPpFfAa])?/
+NET_NAME: /[A-Za-z0-9_.\[\]:!#]+/
+IDENT: /[A-Za-z_][A-Za-z0-9_.\[\]:!#]*/
+QSTRING: /\"[^\"]*\"/ | /'[^']*'/
+FILE_PATH: /\"[^\"]*\"/ | /'[^']*'/ | /[^\s\"';()]+/
+
+%ignore /[ \t\r\n]+/
