@@ -1,0 +1,119 @@
+domain: spice
+ext_modules:
+- domain: spice
+  name: resistor
+  parameters: []
+  ports:
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: p
+    properties: {}
+    uid: 0
+    width: 0
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: n
+    properties: {}
+    uid: 1
+    width: 0
+  properties:
+    spice_prefix: R
+modules:
+- buses: []
+  class_name: ''
+  connections:
+  - domain: 0
+    name: vin
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: vin
+    target:
+      instance_name: R1
+      port_name: p
+    weight: 0
+  - domain: 0
+    name: vout
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: vout
+    target:
+      instance_name: R1
+      port_name: n
+    weight: 0
+  - domain: 0
+    name: vout
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: vout
+    target:
+      instance_name: R2
+      port_name: p
+    weight: 0
+  - domain: 0
+    name: gnd
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: gnd
+    target:
+      instance_name: R2
+      port_name: n
+    weight: 0
+  model_interfaces: []
+  module_references:
+  - class_name: ''
+    module_name: resistor
+    name: R1
+    parameter_overrides:
+      value:
+        model_ref: null
+        prefixed_value:
+          double_value: 10.0
+          prefix: 15
+    parameter_values: []
+    properties: {}
+  - class_name: ''
+    module_name: resistor
+    name: R2
+    parameter_overrides:
+      value:
+        model_ref: null
+        prefixed_value:
+          double_value: 10.0
+          prefix: 15
+    parameter_values: []
+    properties: {}
+  name: divider
+  parameters: []
+  ports:
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: vin
+    properties: {}
+    uid: 0
+    width: 0
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: vout
+    properties: {}
+    uid: 1
+    width: 0
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: gnd
+    properties: {}
+    uid: 2
+    width: 0
+  properties: {}
+  uid: 0
+name: resistor_divider
+properties: {}
+top_module: divider

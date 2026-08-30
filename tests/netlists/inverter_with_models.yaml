@@ -1,0 +1,258 @@
+domain: spice
+ext_modules:
+- domain: spice
+  name: mosfet
+  parameters: []
+  ports:
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: d
+    properties: {}
+    uid: 0
+    width: 0
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: g
+    properties: {}
+    uid: 1
+    width: 0
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: s
+    properties: {}
+    uid: 2
+    width: 0
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: b
+    properties: {}
+    uid: 3
+    width: 0
+  properties:
+    spice_prefix: M
+- domain: spice
+  name: nch
+  parameters:
+  - default_value:
+      model_ref: null
+      prefixed_value:
+        double_value: 49.0
+        prefix: 0
+    description: ''
+    name: level
+    properties: {}
+    uid: 0
+  - default_value:
+      model_ref: null
+      prefixed_value:
+        double_value: 9.0
+        prefix: 8
+    description: ''
+    name: tox
+    properties: {}
+    uid: 0
+  - default_value:
+      model_ref: null
+      prefixed_value:
+        double_value: 0.4
+        prefix: 0
+    description: ''
+    name: vth0
+    properties: {}
+    uid: 0
+  ports: []
+  properties:
+    model_type: nmos
+- domain: spice
+  name: pch
+  parameters:
+  - default_value:
+      model_ref: null
+      prefixed_value:
+        double_value: 49.0
+        prefix: 0
+    description: ''
+    name: level
+    properties: {}
+    uid: 0
+  - default_value:
+      model_ref: null
+      prefixed_value:
+        double_value: 9.0
+        prefix: 8
+    description: ''
+    name: tox
+    properties: {}
+    uid: 0
+  - default_value:
+      model_ref: null
+      prefixed_value:
+        double_value: -0.4
+        prefix: 0
+    description: ''
+    name: vth0
+    properties: {}
+    uid: 0
+  ports: []
+  properties:
+    model_type: pmos
+modules:
+- buses: []
+  class_name: ''
+  connections:
+  - domain: 0
+    name: out
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: out
+    target:
+      instance_name: M1
+      port_name: d
+    weight: 0
+  - domain: 0
+    name: out
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: out
+    target:
+      instance_name: M2
+      port_name: d
+    weight: 0
+  - domain: 0
+    name: in_
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: in_
+    target:
+      instance_name: M1
+      port_name: g
+    weight: 0
+  - domain: 0
+    name: in_
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: in_
+    target:
+      instance_name: M2
+      port_name: g
+    weight: 0
+  - domain: 0
+    name: vdd
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: vdd
+    target:
+      instance_name: M1
+      port_name: s
+    weight: 0
+  - domain: 0
+    name: vdd
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: vdd
+    target:
+      instance_name: M1
+      port_name: b
+    weight: 0
+  - domain: 0
+    name: vss
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: vss
+    target:
+      instance_name: M2
+      port_name: s
+    weight: 0
+  - domain: 0
+    name: vss
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: vss
+    target:
+      instance_name: M2
+      port_name: b
+    weight: 0
+  model_interfaces: []
+  module_references:
+  - class_name: ''
+    module_name: mosfet
+    name: M1
+    parameter_overrides:
+      L:
+        model_ref: null
+        prefixed_value:
+          double_value: 0.18
+          prefix: 9
+      W:
+        model_ref: null
+        prefixed_value:
+          double_value: 1.0
+          prefix: 9
+    parameter_values: []
+    properties:
+      model: pch
+  - class_name: ''
+    module_name: mosfet
+    name: M2
+    parameter_overrides:
+      L:
+        model_ref: null
+        prefixed_value:
+          double_value: 0.18
+          prefix: 9
+      W:
+        model_ref: null
+        prefixed_value:
+          double_value: 0.5
+          prefix: 9
+    parameter_values: []
+    properties:
+      model: nch
+  name: cmos_inverter
+  parameters: []
+  ports:
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: in_
+    properties: {}
+    uid: 0
+    width: 0
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: out
+    properties: {}
+    uid: 1
+    width: 0
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: vdd
+    properties: {}
+    uid: 2
+    width: 0
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: vss
+    properties: {}
+    uid: 3
+    width: 0
+  properties: {}
+  uid: 0
+name: inverter_with_models
+properties: {}
+top_module: cmos_inverter

@@ -1,0 +1,256 @@
+domain: spice
+ext_modules:
+- domain: spice
+  name: resistor
+  parameters: []
+  ports:
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: p
+    properties: {}
+    uid: 0
+    width: 0
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: n
+    properties: {}
+    uid: 1
+    width: 0
+  properties:
+    spice_prefix: R
+modules:
+- buses: []
+  class_name: ''
+  connections:
+  - domain: 0
+    name: in_
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: in_
+    target:
+      instance_name: R1
+      port_name: p
+    weight: 0
+  - domain: 0
+    name: out
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: out
+    target:
+      instance_name: R1
+      port_name: n
+    weight: 0
+  - domain: 0
+    name: out
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: out
+    target:
+      instance_name: R2
+      port_name: p
+    weight: 0
+  - domain: 0
+    name: vss
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: vss
+    target:
+      instance_name: R2
+      port_name: n
+    weight: 0
+  - domain: 0
+    name: vdd
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: vdd
+    target:
+      instance_name: R1
+      port_name: p
+    weight: 0
+  model_interfaces: []
+  module_references:
+  - class_name: ''
+    module_name: resistor
+    name: R1
+    parameter_overrides:
+      value:
+        model_ref: null
+        prefixed_value:
+          double_value: 1.0
+          prefix: 15
+    parameter_values: []
+    properties: {}
+  - class_name: ''
+    module_name: resistor
+    name: R2
+    parameter_overrides:
+      value:
+        model_ref: null
+        prefixed_value:
+          double_value: 1.0
+          prefix: 15
+    parameter_values: []
+    properties: {}
+  name: inverter
+  parameters: []
+  ports:
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: in_
+    properties: {}
+    uid: 0
+    width: 0
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: out
+    properties: {}
+    uid: 1
+    width: 0
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: vdd
+    properties: {}
+    uid: 2
+    width: 0
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: vss
+    properties: {}
+    uid: 3
+    width: 0
+  properties: {}
+  uid: 0
+- buses: []
+  class_name: ''
+  connections:
+  - domain: 0
+    name: a
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: a
+    target:
+      instance_name: X1
+      port_name: in_
+    weight: 0
+  - domain: 0
+    name: mid
+    properties: {}
+    source:
+      instance_name: X1
+      port_name: out
+    target:
+      instance_name: X2
+      port_name: in_
+    weight: 0
+  - domain: 0
+    name: b
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: b
+    target:
+      instance_name: X2
+      port_name: out
+    weight: 0
+  - domain: 0
+    name: vdd
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: vdd
+    target:
+      instance_name: X1
+      port_name: vdd
+    weight: 0
+  - domain: 0
+    name: vdd
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: vdd
+    target:
+      instance_name: X2
+      port_name: vdd
+    weight: 0
+  - domain: 0
+    name: vss
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: vss
+    target:
+      instance_name: X1
+      port_name: vss
+    weight: 0
+  - domain: 0
+    name: vss
+    properties: {}
+    source:
+      instance_name: ''
+      port_name: vss
+    target:
+      instance_name: X2
+      port_name: vss
+    weight: 0
+  model_interfaces: []
+  module_references:
+  - class_name: ''
+    module_name: inverter
+    name: X1
+    parameter_overrides: {}
+    parameter_values: []
+    properties: {}
+  - class_name: ''
+    module_name: inverter
+    name: X2
+    parameter_overrides: {}
+    parameter_values: []
+    properties: {}
+  name: buffer
+  parameters: []
+  ports:
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: a
+    properties: {}
+    uid: 0
+    width: 0
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: b
+    properties: {}
+    uid: 1
+    width: 0
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: vdd
+    properties: {}
+    uid: 2
+    width: 0
+  - cross_section: ''
+    direction: 0
+    domain: 1
+    name: vss
+    properties: {}
+    uid: 3
+    width: 0
+  properties: {}
+  uid: 0
+name: hierarchical
+properties: {}
+top_module: buffer
