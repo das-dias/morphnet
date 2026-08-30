@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package circuit;
+
+// ======================================================================
+// Enums
+// ======================================================================
+
+enum AnalysisKind {
+    ANALYSIS_KIND_UNSPECIFIED = 0;
+    ANALYSIS_KIND_OP          = 1;
+    ANALYSIS_KIND_DC          = 2;
+    ANALYSIS_KIND_AC          = 3;
+    ANALYSIS_KIND_TRAN        = 4;
+    ANALYSIS_KIND_NOISE       = 5;
+    ANALYSIS_KIND_TF          = 6;
+    ANALYSIS_KIND_SENS        = 7;
+    ANALYSIS_KIND_PZ          = 8;
+    ANALYSIS_KIND_DISTO       = 9;
+    ANALYSIS_KIND_FOUR        = 10;
+    ANALYSIS_KIND_FFT         = 11;
+}
+
+enum OutputRequestKind {
+    OUTPUT_REQUEST_KIND_UNSPECIFIED = 0;
+    OUTPUT_REQUEST_KIND_PRINT      = 1;
+    OUTPUT_REQUEST_KIND_PLOT       = 2;
+    OUTPUT_REQUEST_KIND_PROBE      = 3;
+    OUTPUT_REQUEST_KIND_SAVE       = 4;
+}
+
+// ======================================================================
+// Simulation messages
+// ======================================================================
+
+message Analysis {
+    AnalysisKind          kind      = 1;
+    string                name      = 2;
+    repeated string       arguments = 10;
+    map<string, string>   options   = 20;
+}
+
+message OutputRequest {
+    OutputRequestKind   kind          = 1;
+    string              analysis_type = 2;
+    repeated string     variables     = 10;
+}
+
+message Measurement {
+    string name          = 1;
+    string analysis_type = 2;
+    string body          = 3;
+}
+
+message InitialCondition {
+    map<string, string> conditions = 1;
+}
+
+message Simulation {
+    repeated Analysis         analyses           = 1;
+    repeated OutputRequest    output_requests    = 2;
+    repeated Measurement      measurements       = 3;
+    InitialCondition          initial_conditions = 4;
+    InitialCondition          node_sets          = 5;
+    repeated double           temperatures       = 6;
+    map<string, string>       options            = 10;
+}
