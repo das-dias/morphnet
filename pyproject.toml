@@ -1,0 +1,25 @@
+[project]
+name = "hubnet"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "das-dias", email = "das.dias6@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "lark>=1.3.1",
+    "mkdocs>=1.6.1",
+    "mkdocs-shadcn>=0.12.1",
+    "protobuf>=7.36.0",
+    "pydantic>=2.13.5",
+    "pydantic-yaml>=1.7.0",
+    "pylint>=4.0.8",
+    "pytest>=9.1.1",
+    "ruff>=0.16.5",
+    "ty>=0.0.75",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.7,<0.13.0"]
+build-backend = "uv_build"
