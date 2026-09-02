@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://das-dias.github.io/morphnet/</loc>
+         <lastmod>2026-09-02</lastmod>
+    </url>
+    <url>
+         <loc>https://das-dias.github.io/morphnet/advanced-usage/</loc>
+         <lastmod>2026-09-02</lastmod>
+    </url>
+    <url>
+         <loc>https://das-dias.github.io/morphnet/api-reference/</loc>
+         <lastmod>2026-09-02</lastmod>
+    </url>
+    <url>
+         <loc>https://das-dias.github.io/morphnet/basic-usage/</loc>
+         <lastmod>2026-09-02</lastmod>
+    </url>
+    <url>
+         <loc>https://das-dias.github.io/morphnet/extending-grammars/</loc>
+         <lastmod>2026-09-02</lastmod>
+    </url>
+    <url>
+         <loc>https://das-dias.github.io/morphnet/getting-started/</loc>
+         <lastmod>2026-09-02</lastmod>
+    </url>
+</urlset>
