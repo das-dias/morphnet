@@ -307,6 +307,15 @@ This project follows [PEP 8](https://peps.python.org/pep-0008/) enforced by [Ruf
 - Each format needs parser, writer, and roundtrip test files
 - Golden files in `tests/netlists/<format>/` for regression testing
 
+## Related Projects
+
+This project was inspired by the 
+
+* [Netlist](https://github.com/dan-fritchman/Netlist)
+* [NetlistParse.rs](https://github.com/NyanCAD/NetlistParse.rs)
+
+projects.
+
 ## License
 
 See [LICENSE](LICENSE) for details.
