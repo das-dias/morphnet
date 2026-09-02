@@ -1,4 +1,4 @@
-from hubnet.netlist.spectre.parser import parse_spectre
+from morphnet.netlist.spectre.parser import parse_spectre
 
 
 class TestBasicParsing:

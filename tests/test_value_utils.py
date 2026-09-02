@@ -1,7 +1,7 @@
 import pytest
 
-from hubnet.hubnet_schema import PrefixedValue, SIPrefix
-from hubnet.netlist.value_utils import (
+from morphnet.morphnet_schema import PrefixedValue, SIPrefix
+from morphnet.netlist.value_utils import (
     format_si_value,
     is_si_number,
     parse_parameter_number,

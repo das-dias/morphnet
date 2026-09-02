@@ -4,13 +4,13 @@ from pathlib import Path
 
 import pytest
 
-from hubnet.hubnet_schema import Circuit
-from hubnet.netlist.hspice.parser import parse_hspice
-from hubnet.netlist.hspice.writer import write_hspice
-from hubnet.netlist.spectre.parser import parse_spectre
-from hubnet.netlist.spectre.writer import write_spectre
-from hubnet.netlist.vams.parser import parse_vams
-from hubnet.netlist.vams.writer import write_vams
+from morphnet.morphnet_schema import Circuit
+from morphnet.netlist.hspice.parser import parse_hspice
+from morphnet.netlist.hspice.writer import write_hspice
+from morphnet.netlist.spectre.parser import parse_spectre
+from morphnet.netlist.spectre.writer import write_spectre
+from morphnet.netlist.vams.parser import parse_vams
+from morphnet.netlist.vams.writer import write_vams
 
 NETLISTS_DIR = Path(__file__).parent / "netlists"
 

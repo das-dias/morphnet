@@ -1,4 +1,4 @@
-from hubnet.hubnet_schema import (
+from morphnet.morphnet_schema import (
     Circuit,
     Connection,
     Directive,
@@ -16,7 +16,7 @@ from hubnet.hubnet_schema import (
     SignalDomain,
     SIPrefix,
 )
-from hubnet.netlist.vams.writer import write_vams
+from morphnet.netlist.vams.writer import write_vams
 
 
 def make_pv(val: float, prefix: SIPrefix = SIPrefix.UNSPECIFIED) -> ParameterValue:

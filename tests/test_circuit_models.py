@@ -3,7 +3,7 @@ from enum import IntEnum
 import pytest
 from pydantic import ValidationError
 
-from hubnet.hubnet_schema import (
+from morphnet.morphnet_schema import (
     Bus,
     Circuit,
     Connection,

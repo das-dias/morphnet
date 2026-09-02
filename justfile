@@ -13,16 +13,16 @@ bump version="patch":
 
 # compile protobuf schemas to python
 proto:
-    mkdir -p src/hubnet/hubnet_schema
+    mkdir -p src/morphnet/morphnet_schema
     protoc \
       --proto_path=protos \
-      --python_out=src/hubnet/hubnet_schema \
-      --pyi_out=src/hubnet/hubnet_schema \
+      --python_out=src/morphnet/morphnet_schema \
+      --pyi_out=src/morphnet/morphnet_schema \
       protos/*.proto
     # protoc generates bare imports for cross-proto deps; rewrite to fully-qualified
-    find src/hubnet/hubnet_schema -name '*_pb2.py' -exec \
-      sed -i '' 's/^import \([a-z_]*_pb2\)/import hubnet.hubnet_schema.\1/' {} +
-    touch src/hubnet/hubnet_schema/__init__.py
+    find src/morphnet/morphnet_schema -name '*_pb2.py' -exec \
+      sed -i '' 's/^import \([a-z_]*_pb2\)/import morphnet.morphnet_schema.\1/' {} +
+    touch src/morphnet/morphnet_schema/__init__.py
 
 # build package (compiles protos first)
 build: proto

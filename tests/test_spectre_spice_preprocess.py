@@ -1,4 +1,4 @@
-from hubnet.netlist.spectre_spice.preprocess import preprocess_spectre_spice
+from morphnet.netlist.spectre_spice.preprocess import preprocess_spectre_spice
 
 
 class TestDefaultMode:

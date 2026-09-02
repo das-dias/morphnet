@@ -1,4 +1,4 @@
-from hubnet.hubnet_schema import (
+from morphnet.morphnet_schema import (
     Circuit,
     Connection,
     ExternalModule,
@@ -13,7 +13,7 @@ from hubnet.hubnet_schema import (
     SignalDomain,
     SIPrefix,
 )
-from hubnet.netlist.xyce.writer import write_xyce
+from morphnet.netlist.xyce.writer import write_xyce
 
 
 def make_port(uid: int, name: str) -> Port:

@@ -1,6 +1,6 @@
-from hubnet.netlist.spectre.preprocess import preprocess_spectre
-from hubnet.netlist.spice.preprocess import preprocess_spice
-from hubnet.netlist.xyce.preprocess import preprocess_xyce
+from morphnet.netlist.spectre.preprocess import preprocess_spectre
+from morphnet.netlist.spice.preprocess import preprocess_spice
+from morphnet.netlist.xyce.preprocess import preprocess_xyce
 
 
 class TestSpicePreprocess:

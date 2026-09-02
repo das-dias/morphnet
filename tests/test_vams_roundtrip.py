@@ -1,5 +1,5 @@
-from hubnet.netlist.vams.parser import parse_vams
-from hubnet.netlist.vams.writer import write_vams
+from morphnet.netlist.vams.parser import parse_vams
+from morphnet.netlist.vams.writer import write_vams
 
 
 class TestRoundtrip:

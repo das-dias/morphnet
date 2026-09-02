@@ -1,4 +1,4 @@
-from hubnet.netlist.hspice.preprocess import preprocess_hspice
+from morphnet.netlist.hspice.preprocess import preprocess_hspice
 
 
 class TestCommentStripping:

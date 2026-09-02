@@ -1,5 +1,5 @@
-from hubnet.netlist.hspice.parser import parse_hspice
-from hubnet.netlist.hspice.writer import write_hspice
+from morphnet.netlist.hspice.parser import parse_hspice
+from morphnet.netlist.hspice.writer import write_hspice
 
 
 class TestHspiceRoundTrip:

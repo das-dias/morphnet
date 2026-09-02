@@ -1,6 +1,6 @@
-from hubnet.hubnet_schema import AnalysisKind, OutputRequestKind
-from hubnet.netlist.spice.parser import parse_spice
-from hubnet.netlist.spice.writer import write_spice
+from morphnet.morphnet_schema import AnalysisKind, OutputRequestKind
+from morphnet.netlist.spice.parser import parse_spice
+from morphnet.netlist.spice.writer import write_spice
 
 
 class TestSpiceSimulationParsing:

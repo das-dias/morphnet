@@ -1,5 +1,5 @@
-from hubnet.hubnet_schema import Connection, PortReference
-from hubnet.netlist.net_utils import (
+from morphnet.morphnet_schema import Connection, PortReference
+from morphnet.netlist.net_utils import (
     NetMap,
     add_port_to_net,
     connections_to_instance_nets,

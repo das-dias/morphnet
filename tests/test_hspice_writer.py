@@ -1,4 +1,4 @@
-from hubnet.hubnet_schema import (
+from morphnet.morphnet_schema import (
     Circuit,
     Connection,
     Module,
@@ -12,7 +12,7 @@ from hubnet.hubnet_schema import (
     SignalDomain,
     SIPrefix,
 )
-from hubnet.netlist.hspice.writer import write_hspice
+from morphnet.netlist.hspice.writer import write_hspice
 
 
 def make_port(uid: int, name: str) -> Port:
@@ -36,7 +36,7 @@ def make_conn(
 
 class TestBasicOutput:
     def test_simple_circuit(self) -> None:
-        from hubnet.hubnet_schema import ExternalModule
+        from morphnet.morphnet_schema import ExternalModule
 
         resistor = ExternalModule(
             name="resistor",

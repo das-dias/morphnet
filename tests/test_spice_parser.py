@@ -1,6 +1,6 @@
 
-from hubnet.hubnet_schema import SIPrefix
-from hubnet.netlist.spice.parser import parse_spice
+from morphnet.morphnet_schema import SIPrefix
+from morphnet.netlist.spice.parser import parse_spice
 
 
 class TestBasicParsing:

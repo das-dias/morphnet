@@ -1,4 +1,4 @@
-from hubnet.netlist.vams.preprocess import preprocess_vams
+from morphnet.netlist.vams.preprocess import preprocess_vams
 
 
 class TestCommentStripping:

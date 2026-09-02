@@ -1,5 +1,5 @@
-from hubnet.hubnet_schema import DirectiveKind, ExternalModuleKind
-from hubnet.netlist.vams.parser import parse_vams
+from morphnet.morphnet_schema import DirectiveKind, ExternalModuleKind
+from morphnet.netlist.vams.parser import parse_vams
 
 
 class TestBasicParsing:

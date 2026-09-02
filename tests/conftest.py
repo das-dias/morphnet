@@ -1,6 +1,6 @@
 import pytest
 
-from hubnet.hubnet_schema import (
+from morphnet.morphnet_schema import (
     Bus,
     Circuit,
     Connection,

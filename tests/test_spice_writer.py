@@ -1,4 +1,4 @@
-from hubnet.hubnet_schema import (
+from morphnet.morphnet_schema import (
     Circuit,
     Connection,
     Directive,
@@ -15,7 +15,7 @@ from hubnet.hubnet_schema import (
     SignalDomain,
     SIPrefix,
 )
-from hubnet.netlist.spice.writer import write_spice
+from morphnet.netlist.spice.writer import write_spice
 
 
 def make_port(uid: int, name: str) -> Port:
@@ -188,7 +188,7 @@ class TestDirectiveOutput:
         assert ".global VDD VSS" in output
 
     def test_model(self) -> None:
-        from hubnet.hubnet_schema import Parameter
+        from morphnet.morphnet_schema import Parameter
 
         nch = ExternalModule(
             name="nch",

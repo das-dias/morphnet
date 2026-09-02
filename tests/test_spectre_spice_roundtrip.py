@@ -1,5 +1,5 @@
-from hubnet.netlist.spectre_spice.parser import parse_spectre_spice
-from hubnet.netlist.spectre_spice.writer import write_spectre_spice
+from morphnet.netlist.spectre_spice.parser import parse_spectre_spice
+from morphnet.netlist.spectre_spice.writer import write_spectre_spice
 
 
 class TestSpectreSpiceRoundTrip:

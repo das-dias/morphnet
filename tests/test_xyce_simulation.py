@@ -1,5 +1,5 @@
-from hubnet.hubnet_schema import AnalysisKind, OutputRequestKind
-from hubnet.netlist.xyce.parser import parse_xyce
+from morphnet.morphnet_schema import AnalysisKind, OutputRequestKind
+from morphnet.netlist.xyce.parser import parse_xyce
 
 
 class TestXyceSimulationParsing:

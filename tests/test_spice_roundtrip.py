@@ -1,5 +1,5 @@
-from hubnet.netlist.spice.parser import parse_spice
-from hubnet.netlist.spice.writer import write_spice
+from morphnet.netlist.spice.parser import parse_spice
+from morphnet.netlist.spice.writer import write_spice
 
 
 class TestSpiceTextRoundTrip:

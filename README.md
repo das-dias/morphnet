@@ -1,13 +1,13 @@
-# HubNet
+# MorphNet
 
 A bidirectional netlist parser built on [Lark](https://github.com/lark-parser/lark), enabling translation between SPICE-family circuit netlist formats (HSPICE, Xyce, Spectre, Spectre-SPICE) and Verilog-AMS.
 
-All formats share a common intermediate representation defined in [Protocol Buffers](protos/circuit.proto) and wrapped with [Pydantic v2](src/hubnet/hubnet_schema/_circuit.py) models, making it straightforward to parse, transform, and serialize netlists programmatically.
+All formats share a common intermediate representation defined in [Protocol Buffers](protos/circuit.proto) and wrapped with [Pydantic v2](src/morphnet/morphnet_schema/_circuit.py) models, making it straightforward to parse, transform, and serialize netlists programmatically.
 
 ## Installation
 
 ```bash
-pip install hubnet
+pip install morphnet
 ```
 
 **Development setup** (requires [uv](https://docs.astral.sh/uv/) and [just](https://github.com/casey/just)):
@@ -24,8 +24,8 @@ just fmt      # ruff format
 ### Parse a Spectre netlist and convert to Verilog-AMS
 
 ```python
-from hubnet.netlist.spectre.parser import parse_spectre
-from hubnet.netlist.vams.writer import write_vams
+from morphnet.netlist.spectre.parser import parse_spectre
+from morphnet.netlist.vams.writer import write_vams
 
 spectre_netlist = """\
 subckt rc_lowpass (in_ out gnd)
@@ -51,8 +51,8 @@ endmodule
 ### Parse a Verilog-AMS netlist and convert to Spectre
 
 ```python
-from hubnet.netlist.vams.parser import parse_vams
-from hubnet.netlist.spectre.writer import write_spectre
+from morphnet.netlist.vams.parser import parse_vams
+from morphnet.netlist.spectre.writer import write_spectre
 
 vams_netlist = """\
 module cmos_inverter (in_, out, vdd, vss);
@@ -80,8 +80,8 @@ ends cmos_inverter
 Every `Circuit` object serializes to and from YAML:
 
 ```python
-from hubnet.hubnet_schema import Circuit
-from hubnet.netlist.hspice.parser import parse_hspice
+from morphnet.morphnet_schema import Circuit
+from morphnet.netlist.hspice.parser import parse_hspice
 
 circuit = parse_hspice(".subckt rc_lowpass in_ out gnd\nR1 in_ out 1k\nC1 out gnd 100p\n.ends rc_lowpass\n")
 
@@ -95,12 +95,12 @@ assert restored == circuit
 
 | Format | Parser | Writer |
 |---|---|---|
-| HSPICE | `hubnet.netlist.hspice.parser.parse_hspice` | `hubnet.netlist.hspice.writer.write_hspice` |
-| SPICE | `hubnet.netlist.spice.parser.parse_spice` | `hubnet.netlist.spice.writer.write_spice` |
-| Xyce | `hubnet.netlist.xyce.parser.parse_xyce` | `hubnet.netlist.xyce.writer.write_xyce` |
-| Spectre | `hubnet.netlist.spectre.parser.parse_spectre` | `hubnet.netlist.spectre.writer.write_spectre` |
-| Spectre-SPICE | `hubnet.netlist.spectre_spice.parser.parse_spectre_spice` | `hubnet.netlist.spectre_spice.writer.write_spectre_spice` |
-| Verilog-AMS | `hubnet.netlist.vams.parser.parse_vams` | `hubnet.netlist.vams.writer.write_vams` |
+| HSPICE | `morphnet.netlist.hspice.parser.parse_hspice` | `morphnet.netlist.hspice.writer.write_hspice` |
+| SPICE | `morphnet.netlist.spice.parser.parse_spice` | `morphnet.netlist.spice.writer.write_spice` |
+| Xyce | `morphnet.netlist.xyce.parser.parse_xyce` | `morphnet.netlist.xyce.writer.write_xyce` |
+| Spectre | `morphnet.netlist.spectre.parser.parse_spectre` | `morphnet.netlist.spectre.writer.write_spectre` |
+| Spectre-SPICE | `morphnet.netlist.spectre_spice.parser.parse_spectre_spice` | `morphnet.netlist.spectre_spice.writer.write_spectre_spice` |
+| Verilog-AMS | `morphnet.netlist.vams.parser.parse_vams` | `morphnet.netlist.vams.writer.write_vams` |
 
 ## Architecture
 
@@ -127,13 +127,13 @@ Circuit → Writer → formatted text
 
 ### Adding support for a new netlist grammar
 
-HubNet follows a consistent pattern for every netlist format. To add a new one (e.g., `myformat`), create the following modules under `src/hubnet/netlist/myformat/`:
+MorphNet follows a consistent pattern for every netlist format. To add a new one (e.g., `myformat`), create the following modules under `src/morphnet/netlist/myformat/`:
 
 #### 1. Write the Lark grammar
 
-Create a `.lark` file in `src/hubnet/netlist/grammars/myformat.lark`.
+Create a `.lark` file in `src/morphnet/netlist/grammars/myformat.lark`.
 
-HubNet grammars use the [Lark EBNF syntax](https://lark-parser.readthedocs.io/en/stable/grammar.html). The LALR parser is preferred for performance; use Earley only if the grammar is inherently ambiguous.
+MorphNet grammars use the [Lark EBNF syntax](https://lark-parser.readthedocs.io/en/stable/grammar.html). The LALR parser is preferred for performance; use Earley only if the grammar is inherently ambiguous.
 
 Start from the existing grammars as a reference -- for example, `spectre.lark` (71 lines) covers subcircuits, instances, models, parameters, and simulation statements. Every grammar must define a `start` rule that produces the top-level netlist structure.
 
@@ -155,7 +155,7 @@ Shared terminals (identifiers, SI numbers) can be imported from `common.lark` if
 Create `preprocess.py` to normalize raw input before parsing. Most formats need comment stripping, line continuation joining, or whitespace normalization:
 
 ```python
-# src/hubnet/netlist/myformat/preprocess.py
+# src/morphnet/netlist/myformat/preprocess.py
 def preprocess_myformat(text: str) -> str:
     # Strip comments, join continuations, normalize whitespace
     ...
@@ -167,9 +167,9 @@ def preprocess_myformat(text: str) -> str:
 Create `transformer.py` with a Lark `Transformer` subclass that converts the parse tree into a `Circuit` model:
 
 ```python
-# src/hubnet/netlist/myformat/transformer.py
+# src/morphnet/netlist/myformat/transformer.py
 from lark import Transformer
-from hubnet.hubnet_schema import Circuit, Module, Port, ...
+from morphnet.morphnet_schema import Circuit, Module, Port, ...
 
 class MyFormatTransformer(Transformer):
     def subckt_def(self, items):
@@ -192,10 +192,10 @@ The transformer must produce a valid `Circuit` object -- the same protobuf-backe
 Create `parser.py` following the established pattern: a class with a cached `Lark` instance and a `parse()` class method, plus a module-level convenience function:
 
 ```python
-# src/hubnet/netlist/myformat/parser.py
+# src/morphnet/netlist/myformat/parser.py
 from importlib.resources import files as resource_files
 from lark import Lark
-from hubnet.hubnet_schema import Circuit
+from morphnet.morphnet_schema import Circuit
 
 class MyFormatParser:
     lark_instance = None
@@ -204,7 +204,7 @@ class MyFormatParser:
     def get_lark(cls) -> Lark:
         if cls.lark_instance is None:
             grammar_text = (
-                resource_files("hubnet.netlist.grammars")
+                resource_files("morphnet.netlist.grammars")
                 .joinpath("myformat.lark")
                 .read_text(encoding="utf-8")
             )
@@ -226,8 +226,8 @@ def parse_myformat(text: str) -> Circuit:
 Create `writer.py` that takes a `Circuit` and produces formatted netlist text:
 
 ```python
-# src/hubnet/netlist/myformat/writer.py
-from hubnet.hubnet_schema import Circuit
+# src/morphnet/netlist/myformat/writer.py
+from morphnet.morphnet_schema import Circuit
 
 class MyFormatWriter:
     def write(self, circuit: Circuit) -> str:
@@ -265,7 +265,7 @@ If you need to modify the circuit or simulation protobuf schemas:
 
 1. Edit the `.proto` files in `protos/`
 2. Run `just proto` to regenerate Python bindings
-3. Update the corresponding Pydantic models in `src/hubnet/hubnet_schema/`
+3. Update the corresponding Pydantic models in `src/morphnet/morphnet_schema/`
 4. Run the full test suite to verify nothing broke
 
 ## Coding Standards
@@ -290,9 +290,9 @@ This project follows [PEP 8](https://peps.python.org/pep-0008/) enforced by [Ruf
 - Pydantic models use `ClassVar` for class-level attributes
 
 **Code organization**
-- One parser/writer/transformer per format under `src/hubnet/netlist/<format>/`
-- Shared utilities in `src/hubnet/netlist/net_utils.py` and `value_utils.py`
-- Schema models in `src/hubnet/hubnet_schema/`
+- One parser/writer/transformer per format under `src/morphnet/netlist/<format>/`
+- Shared utilities in `src/morphnet/netlist/net_utils.py` and `value_utils.py`
+- Schema models in `src/morphnet/morphnet_schema/`
 - No inline comments unless explaining a non-obvious constraint
 - Prefer flat code over deep nesting
 

@@ -1,4 +1,4 @@
-from hubnet.hubnet_schema import (
+from morphnet.morphnet_schema import (
     Circuit,
     Connection,
     ExternalModule,
@@ -13,7 +13,7 @@ from hubnet.hubnet_schema import (
     SignalDomain,
     SIPrefix,
 )
-from hubnet.netlist.spectre.writer import write_spectre
+from morphnet.netlist.spectre.writer import write_spectre
 
 
 def make_port(uid: int, name: str) -> Port:

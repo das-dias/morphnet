@@ -1,5 +1,5 @@
-from hubnet.hubnet_schema import AnalysisKind
-from hubnet.netlist.hspice.parser import parse_hspice
+from morphnet.morphnet_schema import AnalysisKind
+from morphnet.netlist.hspice.parser import parse_hspice
 
 
 class TestHspiceSimulationParsing:

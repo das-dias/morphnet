@@ -1,5 +1,5 @@
-from hubnet.netlist.xyce.parser import parse_xyce
-from hubnet.netlist.xyce.writer import write_xyce
+from morphnet.netlist.xyce.parser import parse_xyce
+from morphnet.netlist.xyce.writer import write_xyce
 
 
 class TestXyceTextRoundTrip:

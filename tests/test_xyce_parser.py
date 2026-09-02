@@ -1,4 +1,4 @@
-from hubnet.netlist.xyce.parser import parse_xyce
+from morphnet.netlist.xyce.parser import parse_xyce
 
 
 class TestBasicParsing:

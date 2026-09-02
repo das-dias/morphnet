@@ -1,4 +1,4 @@
-from hubnet.netlist.spectre_spice.parser import parse_spectre_spice
+from morphnet.netlist.spectre_spice.parser import parse_spectre_spice
 
 
 class TestPureSpiceMode:

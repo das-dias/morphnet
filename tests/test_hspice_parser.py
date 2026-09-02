@@ -1,7 +1,7 @@
 import pytest
 
-from hubnet.hubnet_schema import SIPrefix
-from hubnet.netlist.hspice.parser import parse_hspice
+from morphnet.morphnet_schema import SIPrefix
+from morphnet.netlist.hspice.parser import parse_hspice
 
 
 class TestBasicParsing:
