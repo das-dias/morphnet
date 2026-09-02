@@ -48,10 +48,6 @@ fmt-check:
 ty:
     uv run ty check .
 
-# generate static images for docs (run manually, commit results)
-docs-images:
-    uv run python scripts/generate_doc_images.py
-
 # build documentation site
 docs:
     uv run mkdocs build --strict
@@ -66,4 +62,4 @@ docs-clean:
 
 # clean build artifacts and generated proto files
 clean:
-    rm -rf build dist *.egg-info src/gflvs/schema
+    rm -rf build dist *.egg-info

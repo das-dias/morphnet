@@ -8,3 +8,10 @@ wheels/
 
 # Virtual environments
 .venv
+
+# MkDocs site output
+site/
+
+# Tool caches
+.ruff_cache/
+.pytest_cache/

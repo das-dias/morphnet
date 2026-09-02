@@ -83,7 +83,9 @@ Every `Circuit` object serializes to and from YAML:
 from morphnet.morphnet_schema import Circuit
 from morphnet.netlist.hspice.parser import parse_hspice
 
-circuit = parse_hspice(".subckt rc_lowpass in_ out gnd\nR1 in_ out 1k\nC1 out gnd 100p\n.ends rc_lowpass\n")
+circuit = parse_hspice(
+    ".subckt rc_lowpass in_ out gnd\nR1 in_ out 1k\nC1 out gnd 100p\n.ends rc_lowpass\n"
+)
 
 yaml_str = circuit.to_yaml()
 restored = Circuit.from_yaml(yaml_str)
@@ -197,6 +199,7 @@ from importlib.resources import files as resource_files
 from lark import Lark
 from morphnet.morphnet_schema import Circuit
 
+
 class MyFormatParser:
     lark_instance = None
 
@@ -217,6 +220,7 @@ class MyFormatParser:
         tree = cls.get_lark().parse(cleaned)
         return MyFormatTransformer().transform(tree)
 
+
 def parse_myformat(text: str) -> Circuit:
     return MyFormatParser.parse(text)
 ```
@@ -229,6 +233,7 @@ Create `writer.py` that takes a `Circuit` and produces formatted netlist text:
 # src/morphnet/netlist/myformat/writer.py
 from morphnet.morphnet_schema import Circuit
 
+
 class MyFormatWriter:
     def write(self, circuit: Circuit) -> str:
         lines = []
@@ -236,6 +241,7 @@ class MyFormatWriter:
             # Emit subcircuit/module header, instances, parameters
             ...
         return "\n".join(lines)
+
 
 def write_myformat(circuit: Circuit) -> str:
     return MyFormatWriter().write(circuit)

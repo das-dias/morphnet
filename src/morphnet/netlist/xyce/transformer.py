@@ -27,7 +27,9 @@ class XyceTransformer(SpiceTransformer):
         return None
 
     def print_stmt(self, items: list[Any]) -> OutputRequestData:
-        tokens = [str(t) for t in items if isinstance(t, Token) and not str(t).startswith(".")]
+        tokens = [
+            str(t) for t in items if isinstance(t, Token) and not str(t).startswith(".")
+        ]
         analysis_type = tokens[0] if tokens else ""
         variables = tokens[1:]
         return OutputRequestData(

@@ -65,9 +65,7 @@ class SpectreWriter:
         lines.append("")
         return "\n".join(lines)
 
-    def write_directives(
-        self, directives: list[Directive], lines: list[str]
-    ) -> None:
+    def write_directives(self, directives: list[Directive], lines: list[str]) -> None:
         params: dict[str, str] = {}
         for d in directives:
             if d.kind == DirectiveKind.INCLUDE:
@@ -178,9 +176,7 @@ class SpectreWriter:
 
     # ── Simulation writing ──────────────────────────────────────────────
 
-    def write_simulation(
-        self, simulation: Simulation, lines: list[str]
-    ) -> None:
+    def write_simulation(self, simulation: Simulation, lines: list[str]) -> None:
         for analysis in simulation.analyses:
             lines.append(self.format_analysis(analysis))
         for req in simulation.output_requests:

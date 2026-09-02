@@ -342,9 +342,7 @@ class SpiceTransformer(Transformer[Token, Circuit]):
 
     # ── Simulation: analysis statements ─────────────────────────────────
 
-    def _extract_sim_args(
-        self, items: list[Any]
-    ) -> tuple[list[str], dict[str, str]]:
+    def _extract_sim_args(self, items: list[Any]) -> tuple[list[str], dict[str, str]]:
         args: list[str] = []
         opts: dict[str, str] = {}
         for item in items:
@@ -405,7 +403,9 @@ class SpiceTransformer(Transformer[Token, Circuit]):
     # ── Simulation: output requests ─────────────────────────────────────
 
     def print_stmt(self, items: list[Any]) -> OutputRequestData:
-        tokens = [str(t) for t in items if isinstance(t, Token) and not str(t).startswith(".")]
+        tokens = [
+            str(t) for t in items if isinstance(t, Token) and not str(t).startswith(".")
+        ]
         analysis_type = tokens[0] if tokens else ""
         variables = tokens[1:]
         return OutputRequestData(
@@ -413,7 +413,9 @@ class SpiceTransformer(Transformer[Token, Circuit]):
         )
 
     def plot_stmt(self, items: list[Any]) -> OutputRequestData:
-        tokens = [str(t) for t in items if isinstance(t, Token) and not str(t).startswith(".")]
+        tokens = [
+            str(t) for t in items if isinstance(t, Token) and not str(t).startswith(".")
+        ]
         analysis_type = tokens[0] if tokens else ""
         variables = tokens[1:]
         return OutputRequestData(
@@ -421,7 +423,9 @@ class SpiceTransformer(Transformer[Token, Circuit]):
         )
 
     def probe_stmt(self, items: list[Any]) -> OutputRequestData:
-        tokens = [str(t) for t in items if isinstance(t, Token) and not str(t).startswith(".")]
+        tokens = [
+            str(t) for t in items if isinstance(t, Token) and not str(t).startswith(".")
+        ]
         analysis_type = tokens[0] if tokens else ""
         variables = tokens[1:]
         return OutputRequestData(
@@ -431,7 +435,9 @@ class SpiceTransformer(Transformer[Token, Circuit]):
     # ── Simulation: measurements ────────────────────────────────────────
 
     def meas_stmt(self, items: list[Any]) -> MeasurementData:
-        tokens = [str(t) for t in items if isinstance(t, Token) and not str(t).startswith(".")]
+        tokens = [
+            str(t) for t in items if isinstance(t, Token) and not str(t).startswith(".")
+        ]
         opts: list[str] = []
         for item in items:
             if isinstance(item, tuple):
@@ -459,11 +465,15 @@ class SpiceTransformer(Transformer[Token, Circuit]):
         return (var_name, str(value))
 
     def ic_stmt(self, items: list[Any]) -> InitialConditionData:
-        conditions = {k: v for item in items if isinstance(item, tuple) for k, v in [item]}
+        conditions = {
+            k: v for item in items if isinstance(item, tuple) for k, v in [item]
+        }
         return InitialConditionData(kind="ic", conditions=conditions)
 
     def nodeset_stmt(self, items: list[Any]) -> InitialConditionData:
-        conditions = {k: v for item in items if isinstance(item, tuple) for k, v in [item]}
+        conditions = {
+            k: v for item in items if isinstance(item, tuple) for k, v in [item]
+        }
         return InitialConditionData(kind="nodeset", conditions=conditions)
 
     # ── Simulation: temperature ─────────────────────────────────────────
@@ -649,9 +659,7 @@ class SpiceTransformer(Transformer[Token, Circuit]):
                         default_value=ParameterValue(prefixed_value=inst.value),
                     )
                 for pname, pval in inst.params.items():
-                    param_overrides[pname] = Parameter(
-                        name=pname, default_value=pval
-                    )
+                    param_overrides[pname] = Parameter(name=pname, default_value=pval)
 
                 module_references.append(
                     ModuleReference(
@@ -819,7 +827,14 @@ class SpiceTransformer(Transformer[Token, Circuit]):
 
         # Build Simulation object if any simulation data was found
         simulation: Simulation | None = None
-        if analyses or output_requests or measurements or ic_data or nodeset_data or temperatures:
+        if (
+            analyses
+            or output_requests
+            or measurements
+            or ic_data
+            or nodeset_data
+            or temperatures
+        ):
             simulation = Simulation(
                 analyses=[
                     Analysis(
@@ -847,9 +862,7 @@ class SpiceTransformer(Transformer[Token, Circuit]):
                     for m in measurements
                 ],
                 initial_conditions=(
-                    InitialCondition(conditions=ic_data.conditions)
-                    if ic_data
-                    else None
+                    InitialCondition(conditions=ic_data.conditions) if ic_data else None
                 ),
                 node_sets=(
                     InitialCondition(conditions=nodeset_data.conditions)

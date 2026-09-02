@@ -24,12 +24,23 @@ def make_pv(val: float, prefix: SIPrefix = SIPrefix.UNSPECIFIED) -> ParameterVal
 
 
 def make_port(
-    uid: int, name: str, direction: PortDirection = PortDirection.INOUT, discipline: str = "electrical"
+    uid: int,
+    name: str,
+    direction: PortDirection = PortDirection.INOUT,
+    discipline: str = "electrical",
 ) -> Port:
-    return Port(uid=uid, name=name, direction=direction, domain=SignalDomain.ELECTRICAL, discipline=discipline)
+    return Port(
+        uid=uid,
+        name=name,
+        direction=direction,
+        domain=SignalDomain.ELECTRICAL,
+        discipline=discipline,
+    )
 
 
-def make_conn(net: str, src_inst: str, src_port: str, tgt_inst: str, tgt_port: str) -> Connection:
+def make_conn(
+    net: str, src_inst: str, src_port: str, tgt_inst: str, tgt_port: str
+) -> Connection:
     return Connection(
         name=net,
         source=PortReference(instance_name=src_inst, port_name=src_port),

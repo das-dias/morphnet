@@ -1,0 +1,39 @@
+site_name: MorphNet
+site_url: https://das-dias.github.io/morphnet
+site_description: >-
+  A bidirectional netlist parser for SPICE-family and Verilog-AMS formats,
+  built on Lark and Protocol Buffers.
+site_author: das-dias
+
+repo_url: https://github.com/das-dias/morphnet
+repo_name: das-dias/morphnet
+
+theme:
+  name: shadcn
+  pygments_style:
+    light: shadcn-light
+    dark: github-dark
+
+plugins:
+  - shadcn/search
+
+markdown_extensions:
+  admonition:
+  codehilite:
+    guess_lang: false
+  fenced_code:
+  footnotes:
+  pymdownx.tabbed:
+    alternate_style: true
+  pymdownx.superfences:
+  pymdownx.blocks.details:
+  toc:
+    permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Basic Usage: basic-usage.md
+  - Advanced Usage: advanced-usage.md
+  - Extending Grammars: extending-grammars.md
+  - API Reference: api-reference.md

@@ -44,9 +44,7 @@ def preprocess_vams(text: str) -> VamsPreprocessResult:
     )
 
 
-ANALOG_SINGLE_RE = re.compile(
-    r"\banalog\b\s+(?!begin\b)([^;]+;)", re.DOTALL
-)
+ANALOG_SINGLE_RE = re.compile(r"\banalog\b\s+(?!begin\b)([^;]+;)", re.DOTALL)
 
 
 def replace_analog_blocks(text: str) -> tuple[str, list[str]]:

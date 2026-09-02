@@ -251,8 +251,6 @@ class TestAllValueTypes:
                 ),
             ],
         )
-        circuit = Circuit(
-            name="test", domain="spice", top_module="test", modules=[mod]
-        )
+        circuit = Circuit(name="test", domain="spice", top_module="test", modules=[mod])
         output = write_spice(circuit)
         assert ".param r='1k+2k'" in output
