@@ -13,22 +13,24 @@ theme:
   pygments_style:
     light: shadcn-light
     dark: github-dark
-
 plugins:
   - shadcn/search
 
 markdown_extensions:
-  admonition:
-  codehilite:
-    guess_lang: false
-  fenced_code:
-  footnotes:
-  pymdownx.tabbed:
-    alternate_style: true
-  pymdownx.superfences:
-  pymdownx.blocks.details:
-  toc:
-    permalink: true
+  - admonition
+  - codehilite
+  - pymdownx.highlight:
+      css_class: codehilite
+      auto_title: true
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - footnotes
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.superfences
+  - pymdownx.blocks.details
+  - toc:
+      permalink: true
 
 nav:
   - Home: index.md
