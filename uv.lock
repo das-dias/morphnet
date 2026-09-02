@@ -93,37 +93,6 @@ wheels = [
 ]
 
 [[package]]
-name = "morphnet"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "lark" },
-    { name = "mkdocs" },
-    { name = "mkdocs-shadcn" },
-    { name = "protobuf" },
-    { name = "pydantic" },
-    { name = "pydantic-yaml" },
-    { name = "pylint" },
-    { name = "pytest" },
-    { name = "ruff" },
-    { name = "ty" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "lark", specifier = ">=1.3.1" },
-    { name = "mkdocs", specifier = ">=1.6.1" },
-    { name = "mkdocs-shadcn", specifier = ">=0.12.1" },
-    { name = "protobuf", specifier = ">=7.36.0" },
-    { name = "pydantic", specifier = ">=2.13.5" },
-    { name = "pydantic-yaml", specifier = ">=1.7.0" },
-    { name = "pylint", specifier = ">=4.0.8" },
-    { name = "pytest", specifier = ">=9.1.1" },
-    { name = "ruff", specifier = ">=0.16.5" },
-    { name = "ty", specifier = ">=0.0.75" },
-]
-
-[[package]]
 name = "iniconfig"
 version = "2.3.0"
 source = { registry = "https://pypi.org/simple" }
@@ -333,6 +302,49 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/91/c4/24b235a03538d820bfee91f351b0213260ef5e526eea4e3042266642fdb7/mkdocs_shadcn-0.12.1.tar.gz", hash = "sha256:0353b0a49d74e8250784b44d98b887fc196f84a7fbe3b80b96f238d56f434b44", size = 3496070, upload-time = "2026-08-29T13:56:57.748Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b9/ac/5f3ad92de57ca426d9348bea283a3b6c74c3513768ba8dcadf3297c6f03d/mkdocs_shadcn-0.12.1-py3-none-any.whl", hash = "sha256:2b355a2366469693eb8dbbfa6106c47c91b43fcf8df6a178a8afcd557cddc731", size = 1792044, upload-time = "2026-08-29T13:56:55.734Z" },
+]
+
+[[package]]
+name = "morphnet"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "lark" },
+    { name = "protobuf" },
+    { name = "pydantic" },
+    { name = "pydantic-yaml" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "mkdocs" },
+    { name = "mkdocs-shadcn" },
+    { name = "pygments" },
+    { name = "pylint" },
+    { name = "pymdown-extensions" },
+    { name = "pytest" },
+    { name = "ruff" },
+    { name = "ty" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "lark", specifier = ">=1.3.1" },
+    { name = "protobuf", specifier = ">=7.36.0" },
+    { name = "pydantic", specifier = ">=2.13.5" },
+    { name = "pydantic-yaml", specifier = ">=1.7.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "mkdocs", specifier = ">=1.6.1" },
+    { name = "mkdocs-shadcn", specifier = ">=0.12.1" },
+    { name = "pygments", specifier = ">=2.19.0" },
+    { name = "pylint", specifier = ">=4.0.8" },
+    { name = "pymdown-extensions", specifier = ">=10.14.3" },
+    { name = "pytest", specifier = ">=9.1.1" },
+    { name = "ruff", specifier = ">=0.16.5" },
+    { name = "ty", specifier = ">=0.0.75" },
 ]
 
 [[package]]

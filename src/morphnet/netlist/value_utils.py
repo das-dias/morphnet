@@ -77,7 +77,9 @@ def parse_si_number(token: str) -> PrefixedValue:
     else:
         suffix_lower = suffix.lower()
         if suffix_lower == "mil":
-            return PrefixedValue(double_value=value * MIL_SCALE, prefix=SIPrefix.UNSPECIFIED)
+            return PrefixedValue(
+                double_value=value * MIL_SCALE, prefix=SIPrefix.UNSPECIFIED
+            )
         prefix = SI_SUFFIX_TO_PREFIX.get(suffix_lower)
         if prefix is None:
             raise ValueError(f"Unknown SI suffix: {suffix!r}")

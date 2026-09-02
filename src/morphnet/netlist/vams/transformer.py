@@ -22,8 +22,14 @@ from morphnet.netlist.value_utils import parse_parameter_number
 
 
 class InstanceData:
-    __slots__ = ("module_type", "name", "named_params", "named_ports",
-                 "positional_params", "positional_ports")
+    __slots__ = (
+        "module_type",
+        "name",
+        "named_params",
+        "named_ports",
+        "positional_params",
+        "positional_ports",
+    )
 
     def __init__(
         self,
@@ -53,9 +59,7 @@ class NatureData:
 class DisciplineData:
     __slots__ = ("domain", "name", "natures")
 
-    def __init__(
-        self, name: str, natures: dict[str, str], domain: str
-    ) -> None:
+    def __init__(self, name: str, natures: dict[str, str], domain: str) -> None:
         self.name = name
         self.natures = natures
         self.domain = domain
@@ -175,7 +179,9 @@ class VamsTransformer(Transformer[Token, Circuit]):
                 if pval.int_value is not None:
                     return pval
                 if pval.prefixed_value is not None:
-                    return ParameterValue(int_value=int(pval.prefixed_value.double_value))
+                    return ParameterValue(
+                        int_value=int(pval.prefixed_value.double_value)
+                    )
                 if pval.string_value is not None:
                     try:
                         return ParameterValue(int_value=int(pval.string_value))
@@ -191,9 +197,7 @@ class VamsTransformer(Transformer[Token, Circuit]):
             case "real":
                 if pval.int_value is not None:
                     return ParameterValue(
-                        prefixed_value=PrefixedValue(
-                            double_value=float(pval.int_value)
-                        )
+                        prefixed_value=PrefixedValue(double_value=float(pval.int_value))
                     )
                 return pval
         return pval
@@ -228,7 +232,9 @@ class VamsTransformer(Transformer[Token, Circuit]):
             if isinstance(item, list):
                 assigns = item
                 break
-        return [(n, self._coerce_value(ptype, v), f"localparam:{ptype}") for n, v in assigns]
+        return [
+            (n, self._coerce_value(ptype, v), f"localparam:{ptype}") for n, v in assigns
+        ]
 
     def untyped_localparam_decl(
         self, items: list[Any]
@@ -260,7 +266,9 @@ class VamsTransformer(Transformer[Token, Circuit]):
             v = ParameterValue(string_value=str(v))
         return v
 
-    def param_override(self, items: list[Any]) -> dict[str, ParameterValue] | list[ParameterValue]:
+    def param_override(
+        self, items: list[Any]
+    ) -> dict[str, ParameterValue] | list[ParameterValue]:
         named: dict[str, ParameterValue] = {}
         positional: list[ParameterValue] = []
         for item in items:
@@ -294,9 +302,15 @@ class VamsTransformer(Transformer[Token, Circuit]):
         ports: dict[str, str] | list[str] = []
 
         idx = 1
-        if idx < len(items) and isinstance(items[idx], (dict, list)) and not isinstance(items[idx], (str, Token)):
+        if (
+            idx < len(items)
+            and isinstance(items[idx], (dict, list))
+            and not isinstance(items[idx], (str, Token))
+        ):
             p = items[idx]
-            if isinstance(p, dict) or (isinstance(p, list) and p and isinstance(p[0], ParameterValue)):
+            if isinstance(p, dict) or (
+                isinstance(p, list) and p and isinstance(p[0], ParameterValue)
+            ):
                 params = p
             idx += 1
 
@@ -413,14 +427,21 @@ class VamsTransformer(Transformer[Token, Circuit]):
 
     # ── Module definition ──────────────────────────────────────────────
 
-    def module_def(self, items: list[Any]) -> tuple[str, Module, dict[str, ExternalModule]]:
+    def module_def(
+        self, items: list[Any]
+    ) -> tuple[str, Module, dict[str, ExternalModule]]:
         module_name = str(items[0])
 
         port_names: list[str] = []
         body_items: list[Any] = []
 
         for item in items[1:]:
-            if isinstance(item, list) and item and isinstance(item[0], str) and not isinstance(item[0], Token):
+            if (
+                isinstance(item, list)
+                and item
+                and isinstance(item[0], str)
+                and not isinstance(item[0], Token)
+            ):
                 port_names = item
             elif isinstance(item, list):
                 body_items = item
@@ -447,7 +468,11 @@ class VamsTransformer(Transformer[Token, Circuit]):
                         props: dict[str, str] = {}
                         if ptype_tag.startswith("localparam"):
                             props["localparam"] = "true"
-                            ptype = ptype_tag.removeprefix("localparam:") if ":" in ptype_tag else ""
+                            ptype = (
+                                ptype_tag.removeprefix("localparam:")
+                                if ":" in ptype_tag
+                                else ""
+                            )
                         else:
                             ptype = ptype_tag
                         if ptype:
@@ -467,13 +492,15 @@ class VamsTransformer(Transformer[Token, Circuit]):
 
         ports: list[Port] = []
         for i, pn in enumerate(port_names):
-            ports.append(Port(
-                uid=i,
-                name=pn,
-                direction=port_dirs.get(pn, PortDirection.INOUT),
-                domain=SignalDomain.ELECTRICAL,
-                discipline=port_disciplines.get(pn, ""),
-            ))
+            ports.append(
+                Port(
+                    uid=i,
+                    name=pn,
+                    direction=port_dirs.get(pn, PortDirection.INOUT),
+                    domain=SignalDomain.ELECTRICAL,
+                    discipline=port_disciplines.get(pn, ""),
+                )
+            )
 
         if ground_net:
             properties["ground_net"] = ground_net
@@ -497,9 +524,7 @@ class VamsTransformer(Transformer[Token, Circuit]):
             elif inst.positional_params:
                 for pi, pv in enumerate(inst.positional_params):
                     pname = f"p{pi}"
-                    param_overrides[pname] = Parameter(
-                        name=pname, default_value=pv
-                    )
+                    param_overrides[pname] = Parameter(name=pname, default_value=pv)
 
             if inst.named_ports:
                 for port_name, net_name in inst.named_ports.items():
@@ -550,6 +575,7 @@ class VamsTransformer(Transformer[Token, Circuit]):
                         props[f"nature_{k}"] = v.string_value
                     elif v.prefixed_value is not None:
                         from morphnet.netlist.value_utils import format_si_value
+
                         props[f"nature_{k}"] = format_si_value(v.prefixed_value)
                 ext_modules[item.name] = ExternalModule(
                     name=item.name,

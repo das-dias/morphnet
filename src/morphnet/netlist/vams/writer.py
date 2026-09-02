@@ -39,9 +39,7 @@ class VamsWriter:
             lines.append("")
         return "\n".join(lines)
 
-    def write_directives(
-        self, directives: list[Directive], lines: list[str]
-    ) -> None:
+    def write_directives(self, directives: list[Directive], lines: list[str]) -> None:
         for d in directives:
             if d.kind == DirectiveKind.INCLUDE:
                 lines.append(f'`include "{d.value}"')
@@ -109,9 +107,7 @@ class VamsWriter:
         inst_nets = connections_to_instance_nets(module.connections)
 
         for ref in module.module_references:
-            lines.append(
-                self.write_instance(ref, inst_nets, ext_by_name, mod_by_name)
-            )
+            lines.append(self.write_instance(ref, inst_nets, ext_by_name, mod_by_name))
 
         analog_block = module.properties.get("analog_block")
         if analog_block:

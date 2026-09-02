@@ -36,7 +36,16 @@ from morphnet.netlist.value_utils import (
 )
 
 SPECTRE_ANALYSIS_TYPES: set[str] = {
-    "tran", "dc", "ac", "noise", "sp", "stb", "pss", "pnoise", "xf", "psp",
+    "tran",
+    "dc",
+    "ac",
+    "noise",
+    "sp",
+    "stb",
+    "pss",
+    "pnoise",
+    "xf",
+    "psp",
     "op",
 }
 

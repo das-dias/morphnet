@@ -1,4 +1,3 @@
-
 from morphnet.morphnet_schema import SIPrefix
 from morphnet.netlist.spice.parser import parse_spice
 

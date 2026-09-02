@@ -84,6 +84,8 @@ R0 (a b) resistor r=1k
 ends test
 """
         circuit = parse_spectre_spice(text)
-        include_values = {d.value for d in circuit.directives if d.kind.name == "INCLUDE"}
+        include_values = {
+            d.value for d in circuit.directives if d.kind.name == "INCLUDE"
+        }
         assert "spice_models.lib" in include_values
         assert "spectre_models.scs" in include_values

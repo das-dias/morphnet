@@ -59,9 +59,7 @@ class SpectreSpiceParser:
                         circuit.simulation.initial_conditions.conditions
                     )
                 if circuit.simulation.node_sets:
-                    ns_conditions.update(
-                        circuit.simulation.node_sets.conditions
-                    )
+                    ns_conditions.update(circuit.simulation.node_sets.conditions)
 
         top_module = all_modules[-1].name if all_modules else ""
 

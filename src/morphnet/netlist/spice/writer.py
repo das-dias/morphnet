@@ -77,9 +77,7 @@ class SpiceWriter:
         lines.append("")
         return "\n".join(lines)
 
-    def write_directives(
-        self, directives: list[Directive], lines: list[str]
-    ) -> None:
+    def write_directives(self, directives: list[Directive], lines: list[str]) -> None:
         for d in directives:
             if d.kind == DirectiveKind.INCLUDE:
                 lines.append(f'.include "{d.value}"')
@@ -244,9 +242,7 @@ class SpiceWriter:
 
     # ── Simulation writing ──────────────────────────────────────────────
 
-    def write_simulation(
-        self, simulation: Simulation, lines: list[str]
-    ) -> None:
+    def write_simulation(self, simulation: Simulation, lines: list[str]) -> None:
         for analysis in simulation.analyses:
             lines.append(self.format_analysis(analysis))
         for req in simulation.output_requests:
@@ -255,14 +251,12 @@ class SpiceWriter:
             lines.append(self.format_measurement(meas))
         if simulation.initial_conditions:
             assigns = " ".join(
-                f"{k}={v}"
-                for k, v in simulation.initial_conditions.conditions.items()
+                f"{k}={v}" for k, v in simulation.initial_conditions.conditions.items()
             )
             lines.append(f".ic {assigns}")
         if simulation.node_sets:
             assigns = " ".join(
-                f"{k}={v}"
-                for k, v in simulation.node_sets.conditions.items()
+                f"{k}={v}" for k, v in simulation.node_sets.conditions.items()
             )
             lines.append(f".nodeset {assigns}")
         if simulation.temperatures:

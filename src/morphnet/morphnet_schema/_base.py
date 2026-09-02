@@ -17,9 +17,7 @@ class ProtoModel(BaseModel):
 
     def to_proto(self) -> ProtoMessage:
         kwargs: dict[str, Any] = {}
-        proto_field_names = {
-            fd.name for fd in self._proto_type.DESCRIPTOR.fields
-        }
+        proto_field_names = {fd.name for fd in self._proto_type.DESCRIPTOR.fields}
         for field_name, field_info in type(self).model_fields.items():
             value = getattr(self, field_name)
             if value is None:

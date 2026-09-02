@@ -1,34 +1,49 @@
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# This workflow installs Python dependencies, lints with Ruff, and runs tests with pytest.
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-name: Python package
+name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
-  build:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install dependencies
+        run: uv sync --group dev
+      - name: Lint with Ruff
+        run: uv run ruff check --output-format=github .
+      - name: Check formatting with Ruff
+        run: uv run ruff format --check .
 
+  test:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.12", "3.13"]
-
     steps:
-    - uses: actions/checkout@v4
-    - name: Install uv
-      uses: astral-sh/setup-uv@v6
-    - name: Set up Python ${{ matrix.python-version }}
-      run: uv python install ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: uv sync
-    - name: Lint with flake8
-      run: |
-        uv run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        uv run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
-      run: uv run pytest
+      - uses: actions/checkout@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+      - name: Set up Python ${{ matrix.python-version }}
+        run: uv python install ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: uv sync --group dev
+      - name: Run tests
+        run: uv run pytest --junitxml=junit-results-${{ matrix.python-version }}.xml
+      - name: Upload test results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.python-version }}
+          path: junit-results-${{ matrix.python-version }}.xml
