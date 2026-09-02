@@ -501,32 +501,32 @@
     <h1 id="extending-morphnet-with-new-formats">Extending MorphNet with New Formats<a class="headerlink" href="#extending-morphnet-with-new-formats" title="Permanent link">&para;</a></h1>
 <p>MorphNet follows a consistent 5-module pattern for every netlist format. To add support for a new format (e.g., <code>myformat</code>), create the following modules under <code>src/morphnet/netlist/myformat/</code>.</p>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>src/morphnet/netlist/myformat/
-  __init__.py          # empty
-  preprocess.py        # text normalization
-  transformer.py       # parse tree -&gt; Circuit
-  parser.py            # grammar + orchestration
-  writer.py            # Circuit -&gt; text
+<div class="codehilite"><span class="filename">Text Only</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>src/morphnet/netlist/myformat/
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  __init__.py          # empty
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  preprocess.py        # text normalization
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  transformer.py       # parse tree -&gt; Circuit
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  parser.py            # grammar + orchestration
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  writer.py            # Circuit -&gt; text
 </code></pre></div>
 <p>Plus a grammar file:</p>
-<div class="highlight"><pre><span></span><code>src/morphnet/netlist/grammars/myformat.lark
+<div class="codehilite"><span class="filename">Text Only</span><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>src/morphnet/netlist/grammars/myformat.lark
 </code></pre></div>
 <h2 id="step-1-write-the-lark-grammar">Step 1: Write the Lark Grammar<a class="headerlink" href="#step-1-write-the-lark-grammar" title="Permanent link">&para;</a></h2>
 <p>Create <code>src/morphnet/netlist/grammars/myformat.lark</code>.</p>
 <p>MorphNet grammars use <a href="https://lark-parser.readthedocs.io/en/stable/grammar.html">Lark EBNF syntax</a>. The LALR parser is preferred for performance; use Earley only if the grammar is inherently ambiguous.</p>
-<div class="highlight"><pre><span></span><code>// myformat.lark
-start: toplevel_item*
-
-?toplevel_item: subckt_def
-              | instance_stmt
-
-subckt_def: "SUBCKT" IDENT port_decl+ body "END"
-// ... define terminals and rules for your format
+<div class="codehilite"><span class="filename">Text Only</span><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>// myformat.lark
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>start: toplevel_item*
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>?toplevel_item: subckt_def
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>              | instance_stmt
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>subckt_def: "SUBCKT" IDENT port_decl+ body "END"
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>// ... define terminals and rules for your format
 </code></pre></div>
 <p>Every grammar must define a <code>start</code> rule that produces the top-level netlist structure.</p>
 <p>Shared terminals (identifiers, SI numbers) can be imported from <code>common.lark</code>:</p>
-<div class="highlight"><pre><span></span><code>%import .common.IDENT
-%import .common.SI_NUMBER
+<div class="codehilite"><span class="filename">Text Only</span><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>%import .common.IDENT
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>%import .common.SI_NUMBER
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -534,38 +534,38 @@ subckt_def: "SUBCKT" IDENT port_decl+ body "END"
 </div>
 <h2 id="step-2-create-the-preprocessor">Step 2: Create the Preprocessor<a class="headerlink" href="#step-2-create-the-preprocessor" title="Permanent link">&para;</a></h2>
 <p>Create <code>src/morphnet/netlist/myformat/preprocess.py</code> to normalize raw input before parsing. Most formats need comment stripping, line continuation joining, or whitespace normalization:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># src/morphnet/netlist/myformat/preprocess.py</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">preprocess_myformat</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="c1"># Strip comments, join continuations, normalize whitespace</span>
-    <span class="o">...</span>
-    <span class="k">return</span> <span class="n">cleaned</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># src/morphnet/netlist/myformat/preprocess.py</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">preprocess_myformat</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="c1"># Strip comments, join continuations, normalize whitespace</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="o">...</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="k">return</span> <span class="n">cleaned</span>
 </code></pre></div>
 <h2 id="step-3-implement-the-transformer">Step 3: Implement the Transformer<a class="headerlink" href="#step-3-implement-the-transformer" title="Permanent link">&para;</a></h2>
 <p>Create <code>src/morphnet/netlist/myformat/transformer.py</code> with a Lark <code>Transformer</code> subclass that converts the parse tree into a <code>Circuit</code> model:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># src/morphnet/netlist/myformat/transformer.py</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">lark</span><span class="w"> </span><span class="kn">import</span> <span class="n">Transformer</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.morphnet_schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">Circuit</span><span class="p">,</span> <span class="n">Module</span><span class="p">,</span> <span class="n">Port</span><span class="p">,</span> <span class="n">ModuleReference</span><span class="p">,</span> <span class="n">Connection</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.net_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">NetMap</span><span class="p">,</span> <span class="n">add_port_to_net</span><span class="p">,</span> <span class="n">net_map_to_connections</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.value_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_si_number</span>
-
-
-<span class="k">class</span><span class="w"> </span><span class="nc">MyFormatTransformer</span><span class="p">(</span><span class="n">Transformer</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">subckt_def</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
-        <span class="c1"># Build a Module from the parsed subcircuit</span>
-        <span class="o">...</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">instance_stmt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
-        <span class="c1"># Build a ModuleReference from a parsed instance</span>
-        <span class="o">...</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
-        <span class="c1"># Assemble the final Circuit</span>
-        <span class="k">return</span> <span class="n">Circuit</span><span class="p">(</span><span class="n">modules</span><span class="o">=...</span><span class="p">,</span> <span class="n">ext_modules</span><span class="o">=...</span><span class="p">)</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># src/morphnet/netlist/myformat/transformer.py</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">lark</span><span class="w"> </span><span class="kn">import</span> <span class="n">Transformer</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.morphnet_schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">Circuit</span><span class="p">,</span> <span class="n">Module</span><span class="p">,</span> <span class="n">Port</span><span class="p">,</span> <span class="n">ModuleReference</span><span class="p">,</span> <span class="n">Connection</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.net_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">NetMap</span><span class="p">,</span> <span class="n">add_port_to_net</span><span class="p">,</span> <span class="n">net_map_to_connections</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.value_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_si_number</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyFormatTransformer</span><span class="p">(</span><span class="n">Transformer</span><span class="p">):</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">subckt_def</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>        <span class="c1"># Build a Module from the parsed subcircuit</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>        <span class="o">...</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">instance_stmt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>        <span class="c1"># Build a ModuleReference from a parsed instance</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>        <span class="o">...</span>
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>        <span class="c1"># Assemble the final Circuit</span>
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>        <span class="k">return</span> <span class="n">Circuit</span><span class="p">(</span><span class="n">modules</span><span class="o">=...</span><span class="p">,</span> <span class="n">ext_modules</span><span class="o">=...</span><span class="p">)</span>
 </code></pre></div>
 <p>The transformer must produce a valid <code>Circuit</code> object — the same protobuf-backed Pydantic model that all other formats use.</p>
 <div class="admonition tip">
@@ -574,66 +574,66 @@ subckt_def: "SUBCKT" IDENT port_decl+ body "END"
 </div>
 <h2 id="step-4-implement-the-parser">Step 4: Implement the Parser<a class="headerlink" href="#step-4-implement-the-parser" title="Permanent link">&para;</a></h2>
 <p>Create <code>src/morphnet/netlist/myformat/parser.py</code> following the established pattern: a class with a cached <code>Lark</code> instance, a <code>parse()</code> classmethod, and a module-level convenience function:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># src/morphnet/netlist/myformat/parser.py</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">importlib.resources</span><span class="w"> </span><span class="kn">import</span> <span class="n">files</span> <span class="k">as</span> <span class="n">resource_files</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassVar</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">lark</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lark</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.morphnet_schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">Circuit</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.myformat.preprocess</span><span class="w"> </span><span class="kn">import</span> <span class="n">preprocess_myformat</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.myformat.transformer</span><span class="w"> </span><span class="kn">import</span> <span class="n">MyFormatTransformer</span>
-
-
-<span class="k">class</span><span class="w"> </span><span class="nc">MyFormatParser</span><span class="p">:</span>
-    <span class="n">lark_instance</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Lark</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_lark</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Lark</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">lark_instance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">grammar_text</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">resource_files</span><span class="p">(</span><span class="s2">"morphnet.netlist.grammars"</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">"myformat.lark"</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
-            <span class="p">)</span>
-            <span class="bp">cls</span><span class="o">.</span><span class="n">lark_instance</span> <span class="o">=</span> <span class="n">Lark</span><span class="p">(</span><span class="n">grammar_text</span><span class="p">,</span> <span class="n">parser</span><span class="o">=</span><span class="s2">"lalr"</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">lark_instance</span>
-
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Circuit</span><span class="p">:</span>
-        <span class="n">cleaned</span> <span class="o">=</span> <span class="n">preprocess_myformat</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-        <span class="n">tree</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_lark</span><span class="p">()</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">cleaned</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">MyFormatTransformer</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">parse_myformat</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Circuit</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">MyFormatParser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># src/morphnet/netlist/myformat/parser.py</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">importlib.resources</span><span class="w"> </span><span class="kn">import</span> <span class="n">files</span> <span class="k">as</span> <span class="n">resource_files</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassVar</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="kn">from</span><span class="w"> </span><span class="nn">lark</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lark</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.morphnet_schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">Circuit</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.myformat.preprocess</span><span class="w"> </span><span class="kn">import</span> <span class="n">preprocess_myformat</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.myformat.transformer</span><span class="w"> </span><span class="kn">import</span> <span class="n">MyFormatTransformer</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyFormatParser</span><span class="p">:</span>
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>    <span class="n">lark_instance</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Lark</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>
+<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>    <span class="nd">@classmethod</span>
+<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_lark</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Lark</span><span class="p">:</span>
+<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">lark_instance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>            <span class="n">grammar_text</span> <span class="o">=</span> <span class="p">(</span>
+<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>                <span class="n">resource_files</span><span class="p">(</span><span class="s2">"morphnet.netlist.grammars"</span><span class="p">)</span>
+<a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>                <span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">"myformat.lark"</span><span class="p">)</span>
+<a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>                <span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
+<a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>            <span class="p">)</span>
+<a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>            <span class="bp">cls</span><span class="o">.</span><span class="n">lark_instance</span> <span class="o">=</span> <span class="n">Lark</span><span class="p">(</span><span class="n">grammar_text</span><span class="p">,</span> <span class="n">parser</span><span class="o">=</span><span class="s2">"lalr"</span><span class="p">)</span>
+<a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a>        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">lark_instance</span>
+<a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a>
+<a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a>    <span class="nd">@classmethod</span>
+<a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Circuit</span><span class="p">:</span>
+<a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a>        <span class="n">cleaned</span> <span class="o">=</span> <span class="n">preprocess_myformat</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<a id="__codelineno-6-31" name="__codelineno-6-31" href="#__codelineno-6-31"></a>        <span class="n">tree</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_lark</span><span class="p">()</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">cleaned</span><span class="p">)</span>
+<a id="__codelineno-6-32" name="__codelineno-6-32" href="#__codelineno-6-32"></a>        <span class="k">return</span> <span class="n">MyFormatTransformer</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span>
+<a id="__codelineno-6-33" name="__codelineno-6-33" href="#__codelineno-6-33"></a>
+<a id="__codelineno-6-34" name="__codelineno-6-34" href="#__codelineno-6-34"></a>
+<a id="__codelineno-6-35" name="__codelineno-6-35" href="#__codelineno-6-35"></a><span class="k">def</span><span class="w"> </span><span class="nf">parse_myformat</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Circuit</span><span class="p">:</span>
+<a id="__codelineno-6-36" name="__codelineno-6-36" href="#__codelineno-6-36"></a>    <span class="k">return</span> <span class="n">MyFormatParser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="step-5-implement-the-writer">Step 5: Implement the Writer<a class="headerlink" href="#step-5-implement-the-writer" title="Permanent link">&para;</a></h2>
 <p>Create <code>src/morphnet/netlist/myformat/writer.py</code> that takes a <code>Circuit</code> and produces formatted netlist text:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># src/morphnet/netlist/myformat/writer.py</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.morphnet_schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">Circuit</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.net_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">connections_to_instance_nets</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.value_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">format_si_value</span>
-
-
-<span class="k">class</span><span class="w"> </span><span class="nc">MyFormatWriter</span><span class="p">:</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuit</span><span class="p">:</span> <span class="n">Circuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
-            <span class="c1"># Emit subcircuit/module header</span>
-            <span class="c1"># Emit instances with port connections and parameters</span>
-            <span class="c1"># Emit footer</span>
-            <span class="o">...</span>
-        <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">write_myformat</span><span class="p">(</span><span class="n">circuit</span><span class="p">:</span> <span class="n">Circuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">MyFormatWriter</span><span class="p">()</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># src/morphnet/netlist/myformat/writer.py</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.morphnet_schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">Circuit</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.net_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">connections_to_instance_nets</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.value_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">format_si_value</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyFormatWriter</span><span class="p">:</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuit</span><span class="p">:</span> <span class="n">Circuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>        <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>        <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>            <span class="c1"># Emit subcircuit/module header</span>
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>            <span class="c1"># Emit instances with port connections and parameters</span>
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>            <span class="c1"># Emit footer</span>
+<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>            <span class="o">...</span>
+<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>        <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>
+<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>
+<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="k">def</span><span class="w"> </span><span class="nf">write_myformat</span><span class="p">(</span><span class="n">circuit</span><span class="p">:</span> <span class="n">Circuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a>    <span class="k">return</span> <span class="n">MyFormatWriter</span><span class="p">()</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span>
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Reuse utilities</p>
@@ -643,37 +643,37 @@ subckt_def: "SUBCKT" IDENT port_decl+ body "END"
 <p>Create three test files in <code>tests/</code>:</p>
 <h3 id="parser-tests">Parser tests<a class="headerlink" href="#parser-tests" title="Permanent link">&para;</a></h3>
 <p><code>tests/test_myformat_parser.py</code> — unit tests for parsing individual constructs:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.myformat.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_myformat</span>
-
-
-<span class="k">class</span><span class="w"> </span><span class="nc">TestBasicParsing</span><span class="p">:</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">test_resistor_subcircuit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_myformat</span><span class="p">(</span><span class="s2">"..."</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">modules</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
-        <span class="k">assert</span> <span class="n">circuit</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"divider"</span>
-
-
-<span class="k">class</span><span class="w"> </span><span class="nc">TestDeviceTypes</span><span class="p">:</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">test_mosfet_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_myformat</span><span class="p">(</span><span class="s2">"..."</span><span class="p">)</span>
-        <span class="n">refs</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">module_references</span>
-        <span class="k">assert</span> <span class="n">refs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">module_name</span> <span class="o">==</span> <span class="s2">"mosfet"</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.myformat.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_myformat</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="k">class</span><span class="w"> </span><span class="nc">TestBasicParsing</span><span class="p">:</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_resistor_subcircuit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>        <span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_myformat</span><span class="p">(</span><span class="s2">"..."</span><span class="p">)</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">modules</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>        <span class="k">assert</span> <span class="n">circuit</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"divider"</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="k">class</span><span class="w"> </span><span class="nc">TestDeviceTypes</span><span class="p">:</span>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_mosfet_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>        <span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_myformat</span><span class="p">(</span><span class="s2">"..."</span><span class="p">)</span>
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>        <span class="n">refs</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">module_references</span>
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>        <span class="k">assert</span> <span class="n">refs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">module_name</span> <span class="o">==</span> <span class="s2">"mosfet"</span>
 </code></pre></div>
 <h3 id="writer-tests">Writer tests<a class="headerlink" href="#writer-tests" title="Permanent link">&para;</a></h3>
 <p><code>tests/test_myformat_writer.py</code> — unit tests for writer output on known <code>Circuit</code> objects.</p>
 <h3 id="roundtrip-tests">Roundtrip tests<a class="headerlink" href="#roundtrip-tests" title="Permanent link">&para;</a></h3>
 <p><code>tests/test_myformat_roundtrip.py</code> — roundtrip stability:</p>
-<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">test_parse_write_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">circuit1</span> <span class="o">=</span> <span class="n">parse_myformat</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-    <span class="n">written</span> <span class="o">=</span> <span class="n">write_myformat</span><span class="p">(</span><span class="n">circuit1</span><span class="p">)</span>
-    <span class="n">circuit2</span> <span class="o">=</span> <span class="n">parse_myformat</span><span class="p">(</span><span class="n">written</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="n">circuit1</span> <span class="o">==</span> <span class="n">circuit2</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">test_parse_write_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">circuit1</span> <span class="o">=</span> <span class="n">parse_myformat</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">written</span> <span class="o">=</span> <span class="n">write_myformat</span><span class="p">(</span><span class="n">circuit1</span><span class="p">)</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">circuit2</span> <span class="o">=</span> <span class="n">parse_myformat</span><span class="p">(</span><span class="n">written</span><span class="p">)</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="k">assert</span> <span class="n">circuit1</span> <span class="o">==</span> <span class="n">circuit2</span>
 </code></pre></div>
 <p>Add golden netlist files under <code>tests/netlists/myformat/</code> for the four standard circuits (<code>rc_lowpass</code>, <code>resistor_divider</code>, <code>hierarchical_subckt</code>, <code>inverter_with_models</code>).</p>
 <h2 id="step-7-register-exports">Step 7: Register Exports<a class="headerlink" href="#step-7-register-exports" title="Permanent link">&para;</a></h2>
 <p>Add the new parse and write functions to <code>src/morphnet/netlist/__init__.py</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.myformat.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_myformat</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.myformat.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_myformat</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.myformat.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_myformat</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.myformat.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_myformat</span>
 </code></pre></div>
 <h2 id="protobuf-schema-changes">Protobuf Schema Changes<a class="headerlink" href="#protobuf-schema-changes" title="Permanent link">&para;</a></h2>
 <p>If you need to modify the circuit or simulation protobuf schemas:</p>

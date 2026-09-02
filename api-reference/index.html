@@ -488,11 +488,11 @@
     <h1 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h1>
 <h2 id="morphnetnetlist-parse-and-write-functions">morphnet.netlist — Parse and Write Functions<a class="headerlink" href="#morphnetnetlist-parse-and-write-functions" title="Permanent link">&para;</a></h2>
 <p>All functions are importable directly from <code>morphnet.netlist</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spectre</span><span class="p">,</span> <span class="n">write_spectre</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spectre</span><span class="p">,</span> <span class="n">write_spectre</span>
 </code></pre></div>
 <p>Or from their format-specific modules:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spectre</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_spectre</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spectre</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_spectre</span>
 </code></pre></div>
 <h3 id="hspice">HSPICE<a class="headerlink" href="#hspice" title="Permanent link">&para;</a></h3>
 <h4 id="parse_hspicetext-str-circuit"><code>parse_hspice(text: str) -&gt; Circuit</code><a class="headerlink" href="#parse_hspicetext-str-circuit" title="Permanent link">&para;</a></h4>
@@ -527,7 +527,7 @@
 <hr />
 <h2 id="morphnetmorphnet_schema-data-models">morphnet.morphnet_schema — Data Models<a class="headerlink" href="#morphnetmorphnet_schema-data-models" title="Permanent link">&para;</a></h2>
 <p>All models are importable from <code>morphnet.morphnet_schema</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.morphnet_schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">Circuit</span><span class="p">,</span> <span class="n">Module</span><span class="p">,</span> <span class="n">Port</span><span class="p">,</span> <span class="n">SIPrefix</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.morphnet_schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">Circuit</span><span class="p">,</span> <span class="n">Module</span><span class="p">,</span> <span class="n">Port</span><span class="p">,</span> <span class="n">SIPrefix</span>
 </code></pre></div>
 <h3 id="base-class">Base Class<a class="headerlink" href="#base-class" title="Permanent link">&para;</a></h3>
 <h4 id="protomodel"><code>ProtoModel</code><a class="headerlink" href="#protomodel" title="Permanent link">&para;</a></h4>
@@ -1296,7 +1296,7 @@
 <p><code>UNSPECIFIED</code> (0), <code>PRINT</code> (1), <code>PLOT</code> (2), <code>PROBE</code> (3), <code>SAVE</code> (4)</p>
 <hr />
 <h2 id="morphnetnetlistvalue_utils-value-utilities">morphnet.netlist.value_utils — Value Utilities<a class="headerlink" href="#morphnetnetlistvalue_utils-value-utilities" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.value_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_si_number</span><span class="p">,</span> <span class="n">format_si_value</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.value_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_si_number</span><span class="p">,</span> <span class="n">format_si_value</span>
 </code></pre></div>
 <h4 id="parse_si_numbertoken-str-prefixedvalue"><code>parse_si_number(token: str) -&gt; PrefixedValue</code><a class="headerlink" href="#parse_si_numbertoken-str-prefixedvalue" title="Permanent link">&para;</a></h4>
 <p>Parse a SPICE-style SI-prefixed number (e.g., <code>"10k"</code>, <code>"2.2u"</code>, <code>"100meg"</code>) into a <code>PrefixedValue</code>. Raises <code>ValueError</code> if the token is not valid.</p>
@@ -1340,10 +1340,10 @@
 </table></div>
 <hr />
 <h2 id="morphnetnetlistnet_utils-network-utilities">morphnet.netlist.net_utils — Network Utilities<a class="headerlink" href="#morphnetnetlistnet_utils-network-utilities" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.net_utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">net_map_to_connections</span><span class="p">,</span>
-    <span class="n">connections_to_instance_nets</span><span class="p">,</span>
-<span class="p">)</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.net_utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">net_map_to_connections</span><span class="p">,</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">connections_to_instance_nets</span><span class="p">,</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="p">)</span>
 </code></pre></div>
 <h4 id="net_map_to_connectionsnet_map-netmap-listconnection"><code>net_map_to_connections(net_map: NetMap) -&gt; list[Connection]</code><a class="headerlink" href="#net_map_to_connectionsnet_map-netmap-listconnection" title="Permanent link">&para;</a></h4>
 <p>Convert a net-based connectivity map (<code>dict[str, list[PortReference]]</code>) to point-to-point <code>Connection</code> objects. For each net with N port references, produces N-1 connections.</p>

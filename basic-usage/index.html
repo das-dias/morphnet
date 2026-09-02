@@ -504,70 +504,70 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="1:6"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><input id="__tabbed_1_5" name="__tabbed_1" type="radio" /><input id="__tabbed_1_6" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Spectre</label><label for="__tabbed_1_2">HSPICE</label><label for="__tabbed_1_3">SPICE</label><label for="__tabbed_1_4">Xyce</label><label for="__tabbed_1_5">Verilog-AMS</label><label for="__tabbed_1_6">Spectre-SPICE</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spectre</span>
-
-<span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_spectre</span><span class="p">(</span><span class="s2">"""</span><span class="se">\</span>
-<span class="s2">subckt rc_lowpass (in_ out gnd)</span>
-<span class="s2">R1 (in_ out) resistor value=1k</span>
-<span class="s2">C1 (out gnd) capacitor value=100p</span>
-<span class="s2">ends rc_lowpass</span>
-<span class="s2">"""</span><span class="p">)</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spectre</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_spectre</span><span class="p">(</span><span class="s2">"""</span><span class="se">\</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="s2">subckt rc_lowpass (in_ out gnd)</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="s2">R1 (in_ out) resistor value=1k</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="s2">C1 (out gnd) capacitor value=100p</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="s2">ends rc_lowpass</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="s2">"""</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.hspice.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_hspice</span>
-
-<span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_hspice</span><span class="p">(</span><span class="s2">"""</span><span class="se">\</span>
-<span class="s2">.subckt rc_lowpass in_ out gnd</span>
-<span class="s2">R1 in_ out 1k</span>
-<span class="s2">C1 out gnd 100p</span>
-<span class="s2">.ends rc_lowpass</span>
-<span class="s2">"""</span><span class="p">)</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.hspice.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_hspice</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_hspice</span><span class="p">(</span><span class="s2">"""</span><span class="se">\</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="s2">.subckt rc_lowpass in_ out gnd</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="s2">R1 in_ out 1k</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="s2">C1 out gnd 100p</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="s2">.ends rc_lowpass</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="s2">"""</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spice.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spice</span>
-
-<span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_spice</span><span class="p">(</span><span class="s2">"""</span><span class="se">\</span>
-<span class="s2">.subckt rc_lowpass in_ out gnd</span>
-<span class="s2">R1 in_ out 1k</span>
-<span class="s2">C1 out gnd 100p</span>
-<span class="s2">.ends rc_lowpass</span>
-<span class="s2">"""</span><span class="p">)</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spice.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spice</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_spice</span><span class="p">(</span><span class="s2">"""</span><span class="se">\</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="s2">.subckt rc_lowpass in_ out gnd</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="s2">R1 in_ out 1k</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="s2">C1 out gnd 100p</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="s2">.ends rc_lowpass</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="s2">"""</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.xyce.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_xyce</span>
-
-<span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_xyce</span><span class="p">(</span><span class="s2">"""</span><span class="se">\</span>
-<span class="s2">.subckt rc_lowpass in_ out gnd</span>
-<span class="s2">R1 in_ out 1k</span>
-<span class="s2">C1 out gnd 100p</span>
-<span class="s2">.ends rc_lowpass</span>
-<span class="s2">"""</span><span class="p">)</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.xyce.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_xyce</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_xyce</span><span class="p">(</span><span class="s2">"""</span><span class="se">\</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="s2">.subckt rc_lowpass in_ out gnd</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="s2">R1 in_ out 1k</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="s2">C1 out gnd 100p</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="s2">.ends rc_lowpass</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="s2">"""</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.vams.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_vams</span>
-
-<span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_vams</span><span class="p">(</span><span class="s2">"""</span><span class="se">\</span>
-<span class="s2">module rc_lowpass (in_, out, gnd);</span>
-<span class="s2">  inout in_, out, gnd;</span>
-<span class="s2">  resistor #(.value(1k)) R1 (.p(in_), .n(out));</span>
-<span class="s2">  capacitor #(.value(100p)) C1 (.p(out), .n(gnd));</span>
-<span class="s2">endmodule</span>
-<span class="s2">"""</span><span class="p">)</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.vams.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_vams</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_vams</span><span class="p">(</span><span class="s2">"""</span><span class="se">\</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="s2">module rc_lowpass (in_, out, gnd);</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="s2">  inout in_, out, gnd;</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="s2">  resistor #(.value(1k)) R1 (.p(in_), .n(out));</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="s2">  capacitor #(.value(100p)) C1 (.p(out), .n(gnd));</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="s2">endmodule</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="s2">"""</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre_spice.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spectre_spice</span>
-
-<span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_spectre_spice</span><span class="p">(</span><span class="s2">"""</span><span class="se">\</span>
-<span class="s2">.subckt rc_lowpass in_ out gnd</span>
-<span class="s2">R1 in_ out 1k</span>
-<span class="s2">C1 out gnd 100p</span>
-<span class="s2">.ends rc_lowpass</span>
-<span class="s2">"""</span><span class="p">)</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre_spice.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spectre_spice</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_spectre_spice</span><span class="p">(</span><span class="s2">"""</span><span class="se">\</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="s2">.subckt rc_lowpass in_ out gnd</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="s2">R1 in_ out 1k</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="s2">C1 out gnd 100p</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="s2">.ends rc_lowpass</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="s2">"""</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -575,118 +575,118 @@
 <p>All of these produce the same <code>Circuit</code> object with one module, two external module references (resistor, capacitor), and the corresponding connections.</p>
 <h2 id="writing-netlists">Writing Netlists<a class="headerlink" href="#writing-netlists" title="Permanent link">&para;</a></h2>
 <p>Every writer takes a <code>Circuit</code> model and returns formatted netlist text:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spectre</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.vams.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_vams</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.hspice.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_hspice</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.xyce.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_xyce</span>
-
-<span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_spectre</span><span class="p">(</span><span class="s2">"""</span><span class="se">\</span>
-<span class="s2">subckt rc_lowpass (in_ out gnd)</span>
-<span class="s2">R1 (in_ out) resistor value=1k</span>
-<span class="s2">C1 (out gnd) capacitor value=100p</span>
-<span class="s2">ends rc_lowpass</span>
-<span class="s2">"""</span><span class="p">)</span>
-
-<span class="c1"># Convert to any supported format</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">write_vams</span><span class="p">(</span><span class="n">circuit</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">write_hspice</span><span class="p">(</span><span class="n">circuit</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">write_xyce</span><span class="p">(</span><span class="n">circuit</span><span class="p">))</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spectre</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.vams.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_vams</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.hspice.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_hspice</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.xyce.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_xyce</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_spectre</span><span class="p">(</span><span class="s2">"""</span><span class="se">\</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="s2">subckt rc_lowpass (in_ out gnd)</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="s2">R1 (in_ out) resistor value=1k</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="s2">C1 (out gnd) capacitor value=100p</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="s2">ends rc_lowpass</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="s2">"""</span><span class="p">)</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="c1"># Convert to any supported format</span>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="nb">print</span><span class="p">(</span><span class="n">write_vams</span><span class="p">(</span><span class="n">circuit</span><span class="p">))</span>
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="nb">print</span><span class="p">(</span><span class="n">write_hspice</span><span class="p">(</span><span class="n">circuit</span><span class="p">))</span>
+<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="nb">print</span><span class="p">(</span><span class="n">write_xyce</span><span class="p">(</span><span class="n">circuit</span><span class="p">))</span>
 </code></pre></div>
 <h2 id="format-conversion">Format Conversion<a class="headerlink" href="#format-conversion" title="Permanent link">&para;</a></h2>
 <p>The core pattern is simple: <strong>parse</strong> with one format, <strong>write</strong> with another.</p>
 <h3 id="spectre-to-verilog-ams">Spectre to Verilog-AMS<a class="headerlink" href="#spectre-to-verilog-ams" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spectre</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.vams.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_vams</span>
-
-<span class="n">spectre_text</span> <span class="o">=</span> <span class="s2">"""</span><span class="se">\</span>
-<span class="s2">subckt rc_lowpass (in_ out gnd)</span>
-<span class="s2">R1 (in_ out) resistor value=1k</span>
-<span class="s2">C1 (out gnd) capacitor value=100p</span>
-<span class="s2">ends rc_lowpass</span>
-<span class="s2">"""</span>
-
-<span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_spectre</span><span class="p">(</span><span class="n">spectre_text</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">write_vams</span><span class="p">(</span><span class="n">circuit</span><span class="p">))</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spectre</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.vams.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_vams</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">spectre_text</span> <span class="o">=</span> <span class="s2">"""</span><span class="se">\</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="s2">subckt rc_lowpass (in_ out gnd)</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="s2">R1 (in_ out) resistor value=1k</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="s2">C1 (out gnd) capacitor value=100p</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="s2">ends rc_lowpass</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="s2">"""</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_spectre</span><span class="p">(</span><span class="n">spectre_text</span><span class="p">)</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="nb">print</span><span class="p">(</span><span class="n">write_vams</span><span class="p">(</span><span class="n">circuit</span><span class="p">))</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="k">module</span><span class="w"> </span><span class="n">rc_lowpass</span><span class="w"> </span><span class="p">(</span><span class="n">in_</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">,</span><span class="w"> </span><span class="n">gnd</span><span class="p">);</span>
-<span class="w">  </span><span class="k">inout</span><span class="w"> </span><span class="n">in_</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">,</span><span class="w"> </span><span class="n">gnd</span><span class="p">;</span>
-<span class="w">  </span><span class="n">resistor</span><span class="w"> </span><span class="p">#(.</span><span class="n">value</span><span class="p">(</span><span class="mh">1</span><span class="n">k</span><span class="p">))</span><span class="w"> </span><span class="n">R1</span><span class="w"> </span><span class="p">(.</span><span class="n">p</span><span class="p">(</span><span class="n">in_</span><span class="p">),</span><span class="w"> </span><span class="p">.</span><span class="n">n</span><span class="p">(</span><span class="n">out</span><span class="p">));</span>
-<span class="w">  </span><span class="n">capacitor</span><span class="w"> </span><span class="p">#(.</span><span class="n">value</span><span class="p">(</span><span class="mh">100</span><span class="n">p</span><span class="p">))</span><span class="w"> </span><span class="n">C1</span><span class="w"> </span><span class="p">(.</span><span class="n">p</span><span class="p">(</span><span class="n">out</span><span class="p">),</span><span class="w"> </span><span class="p">.</span><span class="n">n</span><span class="p">(</span><span class="n">gnd</span><span class="p">));</span>
-<span class="k">endmodule</span>
+<div class="codehilite"><span class="filename">Verilog</span><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">module</span><span class="w"> </span><span class="n">rc_lowpass</span><span class="w"> </span><span class="p">(</span><span class="n">in_</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">,</span><span class="w"> </span><span class="n">gnd</span><span class="p">);</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="k">inout</span><span class="w"> </span><span class="n">in_</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">,</span><span class="w"> </span><span class="n">gnd</span><span class="p">;</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="n">resistor</span><span class="w"> </span><span class="p">#(.</span><span class="n">value</span><span class="p">(</span><span class="mh">1</span><span class="n">k</span><span class="p">))</span><span class="w"> </span><span class="n">R1</span><span class="w"> </span><span class="p">(.</span><span class="n">p</span><span class="p">(</span><span class="n">in_</span><span class="p">),</span><span class="w"> </span><span class="p">.</span><span class="n">n</span><span class="p">(</span><span class="n">out</span><span class="p">));</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="n">capacitor</span><span class="w"> </span><span class="p">#(.</span><span class="n">value</span><span class="p">(</span><span class="mh">100</span><span class="n">p</span><span class="p">))</span><span class="w"> </span><span class="n">C1</span><span class="w"> </span><span class="p">(.</span><span class="n">p</span><span class="p">(</span><span class="n">out</span><span class="p">),</span><span class="w"> </span><span class="p">.</span><span class="n">n</span><span class="p">(</span><span class="n">gnd</span><span class="p">));</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="k">endmodule</span>
 </code></pre></div>
 <h3 id="verilog-ams-to-spectre">Verilog-AMS to Spectre<a class="headerlink" href="#verilog-ams-to-spectre" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.vams.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_vams</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_spectre</span>
-
-<span class="n">vams_text</span> <span class="o">=</span> <span class="s2">"""</span><span class="se">\</span>
-<span class="s2">module cmos_inverter (in_, out, vdd, vss);</span>
-<span class="s2">  inout in_, out, vdd, vss;</span>
-<span class="s2">  mosfet #(.L(0.18u), .W(1u)) M1 (.d(out), .g(in_), .s(vdd), .b(vdd));</span>
-<span class="s2">  mosfet #(.L(0.18u), .W(0.5u)) M2 (.d(out), .g(in_), .s(vss), .b(vss));</span>
-<span class="s2">endmodule</span>
-<span class="s2">"""</span>
-
-<span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_vams</span><span class="p">(</span><span class="n">vams_text</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">write_spectre</span><span class="p">(</span><span class="n">circuit</span><span class="p">))</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.vams.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_vams</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_spectre</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">vams_text</span> <span class="o">=</span> <span class="s2">"""</span><span class="se">\</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="s2">module cmos_inverter (in_, out, vdd, vss);</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="s2">  inout in_, out, vdd, vss;</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="s2">  mosfet #(.L(0.18u), .W(1u)) M1 (.d(out), .g(in_), .s(vdd), .b(vdd));</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="s2">  mosfet #(.L(0.18u), .W(0.5u)) M2 (.d(out), .g(in_), .s(vss), .b(vss));</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="s2">endmodule</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="s2">"""</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_vams</span><span class="p">(</span><span class="n">vams_text</span><span class="p">)</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="nb">print</span><span class="p">(</span><span class="n">write_spectre</span><span class="p">(</span><span class="n">circuit</span><span class="p">))</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>subckt cmos_inverter (in_ out vdd vss)
-M1 (out in_ vdd vdd) mosfet L=0.18u W=1u
-M2 (out in_ vss vss) mosfet L=0.18u W=0.5u
-ends cmos_inverter
+<div class="codehilite"><span class="filename">Text Only</span><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>subckt cmos_inverter (in_ out vdd vss)
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>M1 (out in_ vdd vdd) mosfet L=0.18u W=1u
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>M2 (out in_ vss vss) mosfet L=0.18u W=0.5u
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>ends cmos_inverter
 </code></pre></div>
 <h3 id="hspice-to-spectre">HSPICE to Spectre<a class="headerlink" href="#hspice-to-spectre" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.hspice.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_hspice</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_spectre</span>
-
-<span class="n">hspice_text</span> <span class="o">=</span> <span class="s2">"""</span><span class="se">\</span>
-<span class="s2">.subckt rc_lowpass in_ out gnd</span>
-<span class="s2">R1 in_ out 1k</span>
-<span class="s2">C1 out gnd 100p</span>
-<span class="s2">.ends rc_lowpass</span>
-<span class="s2">"""</span>
-
-<span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_hspice</span><span class="p">(</span><span class="n">hspice_text</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">write_spectre</span><span class="p">(</span><span class="n">circuit</span><span class="p">))</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.hspice.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_hspice</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_spectre</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="n">hspice_text</span> <span class="o">=</span> <span class="s2">"""</span><span class="se">\</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="s2">.subckt rc_lowpass in_ out gnd</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="s2">R1 in_ out 1k</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="s2">C1 out gnd 100p</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="s2">.ends rc_lowpass</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="s2">"""</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_hspice</span><span class="p">(</span><span class="n">hspice_text</span><span class="p">)</span>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="nb">print</span><span class="p">(</span><span class="n">write_spectre</span><span class="p">(</span><span class="n">circuit</span><span class="p">))</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>subckt rc_lowpass (in_ out gnd)
-R1 (in_ out) resistor value=1k
-C1 (out gnd) capacitor value=100p
-ends rc_lowpass
+<div class="codehilite"><span class="filename">Text Only</span><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>subckt rc_lowpass (in_ out gnd)
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>R1 (in_ out) resistor value=1k
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>C1 (out gnd) capacitor value=100p
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>ends rc_lowpass
 </code></pre></div>
 <h2 id="yaml-interchange">YAML Interchange<a class="headerlink" href="#yaml-interchange" title="Permanent link">&para;</a></h2>
 <h3 id="serializing-to-yaml">Serializing to YAML<a class="headerlink" href="#serializing-to-yaml" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spectre</span>
-
-<span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_spectre</span><span class="p">(</span><span class="s2">"""</span><span class="se">\</span>
-<span class="s2">subckt rc_lowpass (in_ out gnd)</span>
-<span class="s2">R1 (in_ out) resistor value=1k</span>
-<span class="s2">C1 (out gnd) capacitor value=100p</span>
-<span class="s2">ends rc_lowpass</span>
-<span class="s2">"""</span><span class="p">)</span>
-
-<span class="n">yaml_str</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">yaml_str</span><span class="p">)</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spectre</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_spectre</span><span class="p">(</span><span class="s2">"""</span><span class="se">\</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="s2">subckt rc_lowpass (in_ out gnd)</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="s2">R1 (in_ out) resistor value=1k</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="s2">C1 (out gnd) capacitor value=100p</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="s2">ends rc_lowpass</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="s2">"""</span><span class="p">)</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="n">yaml_str</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">()</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="nb">print</span><span class="p">(</span><span class="n">yaml_str</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="loading-from-yaml">Loading from YAML<a class="headerlink" href="#loading-from-yaml" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.morphnet_schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">Circuit</span>
-
-<span class="n">circuit</span> <span class="o">=</span> <span class="n">Circuit</span><span class="o">.</span><span class="n">from_yaml</span><span class="p">(</span><span class="n">yaml_str</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">top_module</span><span class="p">)</span>  <span class="c1"># "rc_lowpass"</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.morphnet_schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">Circuit</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="n">circuit</span> <span class="o">=</span> <span class="n">Circuit</span><span class="o">.</span><span class="n">from_yaml</span><span class="p">(</span><span class="n">yaml_str</span><span class="p">)</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">top_module</span><span class="p">)</span>  <span class="c1"># "rc_lowpass"</span>
 </code></pre></div>
 <h3 id="roundtrip">Roundtrip<a class="headerlink" href="#roundtrip" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.morphnet_schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">Circuit</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.hspice.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_hspice</span>
-
-<span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_hspice</span><span class="p">(</span><span class="s2">"""</span><span class="se">\</span>
-<span class="s2">.subckt rc_lowpass in_ out gnd</span>
-<span class="s2">R1 in_ out 1k</span>
-<span class="s2">C1 out gnd 100p</span>
-<span class="s2">.ends rc_lowpass</span>
-<span class="s2">"""</span><span class="p">)</span>
-
-<span class="n">yaml_str</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">()</span>
-<span class="n">restored</span> <span class="o">=</span> <span class="n">Circuit</span><span class="o">.</span><span class="n">from_yaml</span><span class="p">(</span><span class="n">yaml_str</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">restored</span> <span class="o">==</span> <span class="n">circuit</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.morphnet_schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">Circuit</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.hspice.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_hspice</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_hspice</span><span class="p">(</span><span class="s2">"""</span><span class="se">\</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="s2">.subckt rc_lowpass in_ out gnd</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="s2">R1 in_ out 1k</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="s2">C1 out gnd 100p</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="s2">.ends rc_lowpass</span>
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="s2">"""</span><span class="p">)</span>
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>
+<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="n">yaml_str</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">()</span>
+<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="n">restored</span> <span class="o">=</span> <span class="n">Circuit</span><span class="o">.</span><span class="n">from_yaml</span><span class="p">(</span><span class="n">yaml_str</span><span class="p">)</span>
+<a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="k">assert</span> <span class="n">restored</span> <span class="o">==</span> <span class="n">circuit</span>
 </code></pre></div>
 <h2 id="supported-formats-reference">Supported Formats Reference<a class="headerlink" href="#supported-formats-reference" title="Permanent link">&para;</a></h2>
 <div class="table-wrapper"><table>
@@ -738,20 +738,20 @@ ends rc_lowpass
 </tbody>
 </table></div>
 <p>All parsers and writers are importable from <code>morphnet.netlist</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">parse_hspice</span><span class="p">,</span>
-    <span class="n">write_hspice</span><span class="p">,</span>
-    <span class="n">parse_spectre</span><span class="p">,</span>
-    <span class="n">write_spectre</span><span class="p">,</span>
-    <span class="n">parse_spectre_spice</span><span class="p">,</span>
-    <span class="n">write_spectre_spice</span><span class="p">,</span>
-    <span class="n">parse_spice</span><span class="p">,</span>
-    <span class="n">write_spice</span><span class="p">,</span>
-    <span class="n">parse_vams</span><span class="p">,</span>
-    <span class="n">write_vams</span><span class="p">,</span>
-    <span class="n">parse_xyce</span><span class="p">,</span>
-    <span class="n">write_xyce</span><span class="p">,</span>
-<span class="p">)</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>    <span class="n">parse_hspice</span><span class="p">,</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>    <span class="n">write_hspice</span><span class="p">,</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>    <span class="n">parse_spectre</span><span class="p">,</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>    <span class="n">write_spectre</span><span class="p">,</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>    <span class="n">parse_spectre_spice</span><span class="p">,</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>    <span class="n">write_spectre_spice</span><span class="p">,</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>    <span class="n">parse_spice</span><span class="p">,</span>
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>    <span class="n">write_spice</span><span class="p">,</span>
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>    <span class="n">parse_vams</span><span class="p">,</span>
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>    <span class="n">write_vams</span><span class="p">,</span>
+<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>    <span class="n">parse_xyce</span><span class="p">,</span>
+<a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>    <span class="n">write_xyce</span><span class="p">,</span>
+<a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="p">)</span>
 </code></pre></div>
   </div>
   

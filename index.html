@@ -498,40 +498,40 @@
 <li><strong>Lark grammars</strong> — each format is defined by a clean EBNF grammar</li>
 </ul>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>spectre.scs ──┐                          ┌── spectre.scs
-hspice.sp  ───┤  parse_*()   write_*()   ├── hspice.sp
-xyce.cir   ───┼──────────► Circuit ──────►├── xyce.cir
-spice.sp   ───┤          (protobuf +      ├── spice.sp
-vams.vams  ───┘           pydantic)       └── vams.vams
-                             │
-                        to_yaml / from_yaml
-                             │
-                          circuit.yaml
+<div class="codehilite"><span class="filename">Text Only</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>spectre.scs ──┐                          ┌── spectre.scs
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>hspice.sp  ───┤  parse_*()   write_*()   ├── hspice.sp
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>xyce.cir   ───┼──────────► Circuit ──────►├── xyce.cir
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>spice.sp   ───┤          (protobuf +      ├── spice.sp
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>vams.vams  ───┘           pydantic)       └── vams.vams
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                             │
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>                        to_yaml / from_yaml
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                             │
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>                          circuit.yaml
 </code></pre></div>
 <p>Each format follows the same internal pipeline:</p>
-<div class="highlight"><pre><span></span><code>raw text → preprocess → Lark grammar → parse tree → Transformer → Circuit
-Circuit → Writer → formatted text
+<div class="codehilite"><span class="filename">Text Only</span><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>raw text → preprocess → Lark grammar → parse tree → Transformer → Circuit
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>Circuit → Writer → formatted text
 </code></pre></div>
 <h2 id="quick-example">Quick Example<a class="headerlink" href="#quick-example" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spectre</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.vams.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_vams</span>
-
-<span class="n">spectre_netlist</span> <span class="o">=</span> <span class="s2">"""</span><span class="se">\</span>
-<span class="s2">subckt rc_lowpass (in_ out gnd)</span>
-<span class="s2">R1 (in_ out) resistor value=1k</span>
-<span class="s2">C1 (out gnd) capacitor value=100p</span>
-<span class="s2">ends rc_lowpass</span>
-<span class="s2">"""</span>
-
-<span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_spectre</span><span class="p">(</span><span class="n">spectre_netlist</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">write_vams</span><span class="p">(</span><span class="n">circuit</span><span class="p">))</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spectre</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.vams.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_vams</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">spectre_netlist</span> <span class="o">=</span> <span class="s2">"""</span><span class="se">\</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="s2">subckt rc_lowpass (in_ out gnd)</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="s2">R1 (in_ out) resistor value=1k</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="s2">C1 (out gnd) capacitor value=100p</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="s2">ends rc_lowpass</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="s2">"""</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_spectre</span><span class="p">(</span><span class="n">spectre_netlist</span><span class="p">)</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="nb">print</span><span class="p">(</span><span class="n">write_vams</span><span class="p">(</span><span class="n">circuit</span><span class="p">))</span>
 </code></pre></div>
 <p>Output:</p>
-<div class="highlight"><pre><span></span><code><span class="k">module</span><span class="w"> </span><span class="n">rc_lowpass</span><span class="w"> </span><span class="p">(</span><span class="n">in_</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">,</span><span class="w"> </span><span class="n">gnd</span><span class="p">);</span>
-<span class="w">  </span><span class="k">inout</span><span class="w"> </span><span class="n">in_</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">,</span><span class="w"> </span><span class="n">gnd</span><span class="p">;</span>
-<span class="w">  </span><span class="n">resistor</span><span class="w"> </span><span class="p">#(.</span><span class="n">value</span><span class="p">(</span><span class="mh">1</span><span class="n">k</span><span class="p">))</span><span class="w"> </span><span class="n">R1</span><span class="w"> </span><span class="p">(.</span><span class="n">p</span><span class="p">(</span><span class="n">in_</span><span class="p">),</span><span class="w"> </span><span class="p">.</span><span class="n">n</span><span class="p">(</span><span class="n">out</span><span class="p">));</span>
-<span class="w">  </span><span class="n">capacitor</span><span class="w"> </span><span class="p">#(.</span><span class="n">value</span><span class="p">(</span><span class="mh">100</span><span class="n">p</span><span class="p">))</span><span class="w"> </span><span class="n">C1</span><span class="w"> </span><span class="p">(.</span><span class="n">p</span><span class="p">(</span><span class="n">out</span><span class="p">),</span><span class="w"> </span><span class="p">.</span><span class="n">n</span><span class="p">(</span><span class="n">gnd</span><span class="p">));</span>
-<span class="k">endmodule</span>
+<div class="codehilite"><span class="filename">Verilog</span><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">module</span><span class="w"> </span><span class="n">rc_lowpass</span><span class="w"> </span><span class="p">(</span><span class="n">in_</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">,</span><span class="w"> </span><span class="n">gnd</span><span class="p">);</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="k">inout</span><span class="w"> </span><span class="n">in_</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">,</span><span class="w"> </span><span class="n">gnd</span><span class="p">;</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="n">resistor</span><span class="w"> </span><span class="p">#(.</span><span class="n">value</span><span class="p">(</span><span class="mh">1</span><span class="n">k</span><span class="p">))</span><span class="w"> </span><span class="n">R1</span><span class="w"> </span><span class="p">(.</span><span class="n">p</span><span class="p">(</span><span class="n">in_</span><span class="p">),</span><span class="w"> </span><span class="p">.</span><span class="n">n</span><span class="p">(</span><span class="n">out</span><span class="p">));</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="n">capacitor</span><span class="w"> </span><span class="p">#(.</span><span class="n">value</span><span class="p">(</span><span class="mh">100</span><span class="n">p</span><span class="p">))</span><span class="w"> </span><span class="n">C1</span><span class="w"> </span><span class="p">(.</span><span class="n">p</span><span class="p">(</span><span class="n">out</span><span class="p">),</span><span class="w"> </span><span class="p">.</span><span class="n">n</span><span class="p">(</span><span class="n">gnd</span><span class="p">));</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">endmodule</span>
 </code></pre></div>
 <h2 id="supported-formats">Supported Formats<a class="headerlink" href="#supported-formats" title="Permanent link">&para;</a></h2>
 <div class="table-wrapper"><table>
@@ -576,10 +576,10 @@ Circuit → Writer → formatted text
 </tbody>
 </table></div>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>morphnet
+<div class="codehilite"><span class="filename">Bash</span><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>pip<span class="w"> </span>install<span class="w"> </span>morphnet
 </code></pre></div>
 <p>Or with <a href="https://docs.astral.sh/uv/">uv</a>:</p>
-<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>add<span class="w"> </span>morphnet
+<div class="codehilite"><span class="filename">Bash</span><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>uv<span class="w"> </span>add<span class="w"> </span>morphnet
 </code></pre></div>
 <p>See <a href="getting-started/">Getting Started</a> for development setup instructions.</p>
 <h2 id="license">License<a class="headerlink" href="#license" title="Permanent link">&para;</a></h2>

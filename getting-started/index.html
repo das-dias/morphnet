@@ -501,91 +501,91 @@
     <h1 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h1>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
 <h3 id="from-pypi">From PyPI<a class="headerlink" href="#from-pypi" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>morphnet
+<div class="codehilite"><span class="filename">Bash</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>morphnet
 </code></pre></div>
 <p>Or with <a href="https://docs.astral.sh/uv/">uv</a>:</p>
-<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>add<span class="w"> </span>morphnet
+<div class="codehilite"><span class="filename">Bash</span><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>uv<span class="w"> </span>add<span class="w"> </span>morphnet
 </code></pre></div>
 <h3 id="development-setup">Development Setup<a class="headerlink" href="#development-setup" title="Permanent link">&para;</a></h3>
 <p>Requires <a href="https://docs.astral.sh/uv/">uv</a> and <a href="https://github.com/casey/just">just</a>:</p>
-<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/das-dias/morphnet.git
-<span class="nb">cd</span><span class="w"> </span>morphnet
-just<span class="w"> </span>dev<span class="w">      </span><span class="c1"># create venv and install all deps</span>
-just<span class="w"> </span><span class="nb">test</span><span class="w">     </span><span class="c1"># run the test suite</span>
-just<span class="w"> </span>lint<span class="w">     </span><span class="c1"># ruff check --fix</span>
-just<span class="w"> </span>fmt<span class="w">      </span><span class="c1"># ruff format</span>
+<div class="codehilite"><span class="filename">Bash</span><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/das-dias/morphnet.git
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">cd</span><span class="w"> </span>morphnet
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>just<span class="w"> </span>dev<span class="w">      </span><span class="c1"># create venv and install all deps</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>just<span class="w"> </span><span class="nb">test</span><span class="w">     </span><span class="c1"># run the test suite</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>just<span class="w"> </span>lint<span class="w">     </span><span class="c1"># ruff check --fix</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>just<span class="w"> </span>fmt<span class="w">      </span><span class="c1"># ruff format</span>
 </code></pre></div>
 <h2 id="your-first-parse">Your First Parse<a class="headerlink" href="#your-first-parse" title="Permanent link">&para;</a></h2>
 <p>Parse a Spectre netlist into MorphNet's intermediate representation:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spectre</span>
-
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"""</span><span class="se">\</span>
-<span class="s2">subckt rc_lowpass (in_ out gnd)</span>
-<span class="s2">R1 (in_ out) resistor value=1k</span>
-<span class="s2">C1 (out gnd) capacitor value=100p</span>
-<span class="s2">ends rc_lowpass</span>
-<span class="s2">"""</span>
-
-<span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_spectre</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">domain</span><span class="p">)</span>  <span class="c1"># "spectre"</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">top_module</span><span class="p">)</span>  <span class="c1"># "rc_lowpass"</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">modules</span><span class="p">))</span>  <span class="c1"># 1</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spectre</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">text</span> <span class="o">=</span> <span class="s2">"""</span><span class="se">\</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="s2">subckt rc_lowpass (in_ out gnd)</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="s2">R1 (in_ out) resistor value=1k</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="s2">C1 (out gnd) capacitor value=100p</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="s2">ends rc_lowpass</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="s2">"""</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_spectre</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="nb">print</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">domain</span><span class="p">)</span>  <span class="c1"># "spectre"</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="nb">print</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">top_module</span><span class="p">)</span>  <span class="c1"># "rc_lowpass"</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">modules</span><span class="p">))</span>  <span class="c1"># 1</span>
 </code></pre></div>
 <p>The <code>circuit</code> object is a <code>Circuit</code> model — MorphNet's common intermediate representation. Every parser produces the same type, regardless of the input format.</p>
 <h2 id="your-first-conversion">Your First Conversion<a class="headerlink" href="#your-first-conversion" title="Permanent link">&para;</a></h2>
 <p>Convert from one format to another by combining a parser with a writer:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spectre</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.hspice.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_hspice</span>
-
-<span class="n">spectre_text</span> <span class="o">=</span> <span class="s2">"""</span><span class="se">\</span>
-<span class="s2">subckt rc_lowpass (in_ out gnd)</span>
-<span class="s2">R1 (in_ out) resistor value=1k</span>
-<span class="s2">C1 (out gnd) capacitor value=100p</span>
-<span class="s2">ends rc_lowpass</span>
-<span class="s2">"""</span>
-
-<span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_spectre</span><span class="p">(</span><span class="n">spectre_text</span><span class="p">)</span>
-<span class="n">hspice_text</span> <span class="o">=</span> <span class="n">write_hspice</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">hspice_text</span><span class="p">)</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.spectre.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_spectre</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.hspice.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_hspice</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">spectre_text</span> <span class="o">=</span> <span class="s2">"""</span><span class="se">\</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="s2">subckt rc_lowpass (in_ out gnd)</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="s2">R1 (in_ out) resistor value=1k</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="s2">C1 (out gnd) capacitor value=100p</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="s2">ends rc_lowpass</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="s2">"""</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_spectre</span><span class="p">(</span><span class="n">spectre_text</span><span class="p">)</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="n">hspice_text</span> <span class="o">=</span> <span class="n">write_hspice</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="nb">print</span><span class="p">(</span><span class="n">hspice_text</span><span class="p">)</span>
 </code></pre></div>
 <p>Output:</p>
-<div class="highlight"><pre><span></span><code><span class="p">.</span><span class="nx">subckt</span><span class="w"> </span><span class="nx">rc_lowpass</span><span class="w"> </span><span class="nx">in_</span><span class="w"> </span><span class="nx">out</span><span class="w"> </span><span class="nx">gnd</span>
-<span class="nx">R1</span><span class="w"> </span><span class="nx">in_</span><span class="w"> </span><span class="nx">out</span><span class="w"> </span><span class="mi">1</span><span class="nx">k</span>
-<span class="nx">C1</span><span class="w"> </span><span class="nx">out</span><span class="w"> </span><span class="nx">gnd</span><span class="w"> </span><span class="mi">100</span><span class="kd">p</span>
-<span class="p">.</span><span class="nx">ends</span><span class="w"> </span><span class="nx">rc_lowpass</span>
+<div class="codehilite"><span class="filename">Spice</span><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">.</span><span class="nx">subckt</span><span class="w"> </span><span class="nx">rc_lowpass</span><span class="w"> </span><span class="nx">in_</span><span class="w"> </span><span class="nx">out</span><span class="w"> </span><span class="nx">gnd</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nx">R1</span><span class="w"> </span><span class="nx">in_</span><span class="w"> </span><span class="nx">out</span><span class="w"> </span><span class="mi">1</span><span class="nx">k</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nx">C1</span><span class="w"> </span><span class="nx">out</span><span class="w"> </span><span class="nx">gnd</span><span class="w"> </span><span class="mi">100</span><span class="kd">p</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="p">.</span><span class="nx">ends</span><span class="w"> </span><span class="nx">rc_lowpass</span>
 </code></pre></div>
 <h2 id="yaml-roundtrip">YAML Roundtrip<a class="headerlink" href="#yaml-roundtrip" title="Permanent link">&para;</a></h2>
 <p>Every <code>Circuit</code> object can be serialized to and from YAML for portable interchange:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.morphnet_schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">Circuit</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.hspice.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_hspice</span>
-
-<span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_hspice</span><span class="p">(</span><span class="s2">"""</span><span class="se">\</span>
-<span class="s2">.subckt rc_lowpass in_ out gnd</span>
-<span class="s2">R1 in_ out 1k</span>
-<span class="s2">C1 out gnd 100p</span>
-<span class="s2">.ends rc_lowpass</span>
-<span class="s2">"""</span><span class="p">)</span>
-
-<span class="n">yaml_str</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">()</span>
-<span class="n">restored</span> <span class="o">=</span> <span class="n">Circuit</span><span class="o">.</span><span class="n">from_yaml</span><span class="p">(</span><span class="n">yaml_str</span><span class="p">)</span>
-
-<span class="k">assert</span> <span class="n">restored</span> <span class="o">==</span> <span class="n">circuit</span>
+<div class="codehilite"><span class="filename">Python</span><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.morphnet_schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">Circuit</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">morphnet.netlist.hspice.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_hspice</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">circuit</span> <span class="o">=</span> <span class="n">parse_hspice</span><span class="p">(</span><span class="s2">"""</span><span class="se">\</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="s2">.subckt rc_lowpass in_ out gnd</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="s2">R1 in_ out 1k</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="s2">C1 out gnd 100p</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="s2">.ends rc_lowpass</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="s2">"""</span><span class="p">)</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="n">yaml_str</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">()</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="n">restored</span> <span class="o">=</span> <span class="n">Circuit</span><span class="o">.</span><span class="n">from_yaml</span><span class="p">(</span><span class="n">yaml_str</span><span class="p">)</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="k">assert</span> <span class="n">restored</span> <span class="o">==</span> <span class="n">circuit</span>
 </code></pre></div>
 <h2 id="project-structure">Project Structure<a class="headerlink" href="#project-structure" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>src/morphnet/
-  morphnet_schema/     # Pydantic + protobuf data models (Circuit, Module, Port, etc.)
-  netlist/
-    grammars/          # Lark EBNF grammar files for each format
-    hspice/            # HSPICE parser, writer, transformer, preprocessor
-    spectre/           # Spectre parser, writer, transformer, preprocessor
-    spectre_spice/     # Spectre-SPICE parser, writer, preprocessor
-    spice/             # Generic SPICE parser, writer, transformer, preprocessor
-    vams/              # Verilog-AMS parser, writer, transformer, preprocessor
-    xyce/              # Xyce parser, writer, transformer, preprocessor
-    net_utils.py       # Connectivity utilities
-    value_utils.py     # SI value parsing and formatting
-    simulation_data.py # Simulation analysis helpers
+<div class="codehilite"><span class="filename">Text Only</span><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>src/morphnet/
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>  morphnet_schema/     # Pydantic + protobuf data models (Circuit, Module, Port, etc.)
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>  netlist/
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    grammars/          # Lark EBNF grammar files for each format
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    hspice/            # HSPICE parser, writer, transformer, preprocessor
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    spectre/           # Spectre parser, writer, transformer, preprocessor
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    spectre_spice/     # Spectre-SPICE parser, writer, preprocessor
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>    spice/             # Generic SPICE parser, writer, transformer, preprocessor
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    vams/              # Verilog-AMS parser, writer, transformer, preprocessor
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>    xyce/              # Xyce parser, writer, transformer, preprocessor
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>    net_utils.py       # Connectivity utilities
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>    value_utils.py     # SI value parsing and formatting
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>    simulation_data.py # Simulation analysis helpers
 </code></pre></div>
   </div>
   
