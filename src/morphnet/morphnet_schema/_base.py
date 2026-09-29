@@ -9,7 +9,7 @@ from pydantic import BaseModel, ConfigDict
 
 class ProtoModel(BaseModel):
     model_config = ConfigDict(
-        frozen=True,
+        frozen=False,
         populate_by_name=True,
     )
 

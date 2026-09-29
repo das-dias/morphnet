@@ -54,12 +54,6 @@ def _param_value_to_str(pval: ParameterValue) -> str:
     """Convert a ParameterValue to a plain string for directive storage."""
     if pval.prefixed_value is not None:
         return format_si_value(pval.prefixed_value)
-    if pval.int_value is not None:
-        return str(pval.int_value)
-    if pval.expression is not None:
-        return pval.expression
-    if pval.string_value is not None:
-        return pval.string_value
     return ""
 
 
@@ -130,17 +124,16 @@ class SpectreTransformer(Transformer[Token, Circuit]):
         return parse_parameter_number(str(items[0]))
 
     def pvalue_ident(self, items: list[Token]) -> ParameterValue:
-        return ParameterValue(string_value=str(items[0]))
+        return ParameterValue()
 
     def pvalue_string(self, items: list[Token]) -> ParameterValue:
-        raw = str(items[0]).strip("\"'")
-        return ParameterValue(string_value=raw)
+        return ParameterValue()
 
     def param_assign(self, items: list[Any]) -> tuple[str, ParameterValue]:
         name = str(items[0])
         value = items[1]
         if not isinstance(value, ParameterValue):
-            value = ParameterValue(string_value=str(value))
+            value = ParameterValue()
         return (name, value)
 
     def port_decl(self, items: list[Token]) -> tuple[str, str]:
@@ -295,12 +288,11 @@ class SpectreTransformer(Transformer[Token, Circuit]):
 
         ports: list[Port] = [
             Port(
-                uid=i,
                 name=pn,
                 direction=PortDirection.INOUT,
                 domain=SignalDomain.ELECTRICAL,
             )
-            for i, pn in enumerate(port_names)
+            for pn in port_names
         ]
 
         net_map: NetMap = {}
@@ -331,10 +323,10 @@ class SpectreTransformer(Transformer[Token, Circuit]):
                     ModuleReference(
                         name=inst.name,
                         module_name=inst.cell_name,
-                        parameter_overrides={
-                            pname: Parameter(name=pname, default_value=pval)
+                        parameters=[
+                            Parameter(name=pname, default_value=pval)
                             for pname, pval in inst.params.items()
-                        },
+                        ],
                     )
                 )
             else:
@@ -349,36 +341,32 @@ class SpectreTransformer(Transformer[Token, Circuit]):
                 if module_name not in ext_modules:
                     ext_ports = [
                         Port(
-                            uid=j,
                             name=pn,
                             direction=PortDirection.INOUT,
                             domain=SignalDomain.ELECTRICAL,
                         )
-                        for j, pn in enumerate(port_template)
+                        for pn in port_template
                     ]
                     ext_modules[module_name] = ExternalModule(
                         name=module_name,
-                        domain="spectre",
                         ports=ext_ports,
-                        kind=ExternalModuleKind.DEVICE,
                         properties={"spice_prefix": device_prefix},
                     )
 
-                param_overrides: dict[str, Parameter] = {
-                    pname: Parameter(name=pname, default_value=pval)
+                params = [
+                    Parameter(name=pname, default_value=pval)
                     for pname, pval in inst.params.items()
-                }
-
-                model_name = ""
+                ]
+                props: dict[str, str] = {}
                 if inst.cell_name and inst.cell_name != module_name:
-                    model_name = inst.cell_name
+                    props["model_name"] = inst.cell_name
 
                 module_references.append(
                     ModuleReference(
                         name=inst.name,
                         module_name=module_name,
-                        parameter_overrides=param_overrides,
-                        model_name=model_name,
+                        parameters=params,
+                        properties=props,
                     )
                 )
 
@@ -386,12 +374,10 @@ class SpectreTransformer(Transformer[Token, Circuit]):
             if mdata.name not in ext_modules:
                 ext_modules[mdata.name] = ExternalModule(
                     name=mdata.name,
-                    domain="spectre",
                     parameters=[
                         Parameter(name=pn, default_value=pv)
                         for pn, pv in mdata.params.items()
                     ],
-                    kind=ExternalModuleKind.MODEL,
                     properties={"model_type": mdata.type_name},
                 )
 
@@ -465,12 +451,10 @@ class SpectreTransformer(Transformer[Token, Circuit]):
             if mdata.name not in all_ext_modules:
                 all_ext_modules[mdata.name] = ExternalModule(
                     name=mdata.name,
-                    domain="spectre",
                     parameters=[
                         Parameter(name=pn, default_value=pv)
                         for pn, pv in mdata.params.items()
                     ],
-                    kind=ExternalModuleKind.MODEL,
                     properties={"model_type": mdata.type_name},
                 )
 
@@ -500,7 +484,6 @@ class SpectreTransformer(Transformer[Token, Circuit]):
 
         return Circuit(
             name="",
-            domain="spectre",
             top_module=top_module,
             modules=modules,
             ext_modules=list(all_ext_modules.values()),

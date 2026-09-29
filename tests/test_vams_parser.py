@@ -13,7 +13,6 @@ module divider (vin, vout, gnd);
 endmodule
 """
         circuit = parse_vams(text)
-        assert circuit.domain == "vams"
         assert circuit.top_module == "divider"
         assert len(circuit.modules) == 1
         mod = circuit.modules[0]
@@ -80,7 +79,8 @@ endmodule
         assert p.name == "n"
         assert p.properties.get("type") == "integer"
         assert p.default_value is not None
-        assert p.default_value.int_value == 4
+        assert p.default_value.prefixed_value is not None
+        assert p.default_value.prefixed_value.double_value == 4.0
 
     def test_untyped_parameter(self) -> None:
         text = """\
@@ -121,8 +121,8 @@ endmodule
         ref = circuit.modules[0].module_references[0]
         assert ref.name == "R1"
         assert ref.module_name == "resistor"
-        assert "r" in ref.parameter_overrides
-        param = ref.parameter_overrides["r"]
+        assert any(p.name == "r" for p in ref.parameters)
+        param = next(p for p in ref.parameters if p.name == "r")
         assert param.default_value.prefixed_value is not None
 
     def test_positional_ports(self) -> None:
@@ -151,7 +151,7 @@ endmodule
         ref = circuit.modules[0].module_references[0]
         assert ref.name == "X1"
         assert ref.module_name == "mysubckt"
-        assert len(ref.parameter_overrides) == 0
+        assert len(ref.parameters) == 0
 
 
 class TestDirectives:
@@ -197,7 +197,7 @@ endmodule
         assert "Voltage" in ext_names
         voltage = next(e for e in circuit.ext_modules if e.name == "Voltage")
         assert voltage.kind == ExternalModuleKind.NATURE
-        assert "nature_units" in voltage.properties
+        assert "nature_abstol" in voltage.properties
 
     def test_discipline(self) -> None:
         text = """\

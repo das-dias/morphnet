@@ -50,7 +50,6 @@ class VamsParser:
         if directives:
             circuit = Circuit(
                 name=circuit.name,
-                domain=circuit.domain,
                 top_module=circuit.top_module,
                 modules=circuit.modules,
                 ext_modules=circuit.ext_modules,

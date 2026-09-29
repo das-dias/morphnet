@@ -13,11 +13,6 @@ class XyceWriter(SpiceWriter):
     """
 
     def format_param_value(self, pval: ParameterValue) -> str:
-        if pval.expression is not None:
-            expr = pval.expression
-            if not expr.startswith("{"):
-                expr = "{" + expr + "}"
-            return expr
         return super().format_param_value(pval)
 
 

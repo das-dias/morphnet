@@ -35,12 +35,6 @@ class SpiceWriter:
         """Format any ParameterValue variant as a SPICE-compatible string."""
         if pval.prefixed_value is not None:
             return format_si_value(pval.prefixed_value)
-        if pval.int_value is not None:
-            return str(pval.int_value)
-        if pval.expression is not None:
-            return f"'{pval.expression}'"
-        if pval.string_value is not None:
-            return pval.string_value
         return "0"
 
     def write(self, circuit: Circuit) -> str:
@@ -164,47 +158,31 @@ class SpiceWriter:
         if prefix:
             # Primitive device: R1 net1 net2 value param=val ...
             inst_name = ref.name
-            if ext_mod:
-                port_order = [p.name for p in ext_mod.ports]
-            else:
-                port_order = ["p", "n"]
-
+            port_order = [p.name for p in ext_mod.ports] if ext_mod else ["p", "n"]
             nets = [inst_nets.get((inst_name, pn), "?") for pn in port_order]
             nets_str = " ".join(nets)
 
-            model_name = ref.model_name
-
-            # Device value (for R, C, L)
+            model_name = ref.properties.get("model_name", "")
             value_str = ""
-            value_param = ref.parameter_overrides.get("value")
-            if value_param and value_param.default_value:
-                value_str = self.format_param_value(value_param.default_value)
-
-            # Other params
             other_params: list[str] = []
-            for pname, param in ref.parameter_overrides.items():
-                if pname == "value":
-                    continue
-                if param.default_value:
-                    other_params.append(
-                        f"{pname}={self.format_param_value(param.default_value)}"
-                    )
+            for param in ref.parameters:
+                if param.name == "value" and param.default_value:
+                    value_str = self.format_param_value(param.default_value)
+                elif param.default_value:
+                    other_params.append(f"{param.name}={self.format_param_value(param.default_value)}")
 
             parts = [inst_name, nets_str]
             if model_name:
                 parts.append(model_name)
             if value_str:
                 parts.append(value_str)
-            if other_params:
-                parts.extend(other_params)
-
+            parts.extend(other_params)
             return " ".join(parts)
 
         # Subcircuit instance: X1 net1 net2 ... subckt_name param=val
         inst_name = ref.name
         subckt_name = ref.module_name
 
-        # Resolve port order: module defs first, then ext_modules, then infer
         ref_mod = mod_by_name.get(subckt_name)
         if ref_mod is not None:
             port_order = [p.name for p in ref_mod.ports]
@@ -216,16 +194,13 @@ class SpiceWriter:
         nets = [inst_nets.get((inst_name, pn), "?") for pn in port_order]
         nets_str = " ".join(nets)
 
-        params_parts: list[str] = []
-        for pname, param in ref.parameter_overrides.items():
-            if param.default_value:
-                params_parts.append(
-                    f"{pname}={self.format_param_value(param.default_value)}"
-                )
-
+        params_parts = [
+            f"{p.name}={self.format_param_value(p.default_value)}"
+            for p in ref.parameters
+            if p.default_value
+        ]
         parts = [inst_name, nets_str, subckt_name]
-        if params_parts:
-            parts.extend(params_parts)
+        parts.extend(params_parts)
         return " ".join(parts)
 
     def infer_port_order(

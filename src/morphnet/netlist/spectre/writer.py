@@ -30,12 +30,6 @@ class SpectreWriter:
         """Format any ParameterValue variant as a Spectre-compatible string."""
         if pval.prefixed_value is not None:
             return format_si_value(pval.prefixed_value)
-        if pval.int_value is not None:
-            return str(pval.int_value)
-        if pval.expression is not None:
-            return f"'{pval.expression}'"
-        if pval.string_value is not None:
-            return pval.string_value
         return "0"
 
     def write(self, circuit: Circuit) -> str:
@@ -150,14 +144,14 @@ class SpectreWriter:
         nets = [inst_nets.get((ref.name, pn), "?") for pn in port_order]
         nets_str = " ".join(nets)
 
-        cell_name = ref.model_name if ref.model_name else ref.module_name
+        cell_name = ref.properties.get("model_name") or ref.module_name
 
         # Params
         param_strs: list[str] = []
-        for pname, param in ref.parameter_overrides.items():
+        for param in ref.parameters:
             if param.default_value:
                 param_strs.append(
-                    f"{pname}={self.format_param_value(param.default_value)}"
+                    f"{param.name}={self.format_param_value(param.default_value)}"
                 )
 
         params_text = " " + " ".join(param_strs) if param_strs else ""

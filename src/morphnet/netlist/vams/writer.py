@@ -123,12 +123,12 @@ class VamsWriter:
         mod_by_name: dict[str, Module],
     ) -> str:
         params_str = ""
-        if ref.parameter_overrides:
-            param_parts: list[str] = []
-            for pname, param in ref.parameter_overrides.items():
-                if param.default_value:
-                    val = self.format_param_value(param.default_value)
-                    param_parts.append(f".{pname}({val})")
+        if ref.parameters:
+            param_parts = [
+                f".{p.name}({self.format_param_value(p.default_value)})"
+                for p in ref.parameters
+                if p.default_value
+            ]
             params_str = f" #({', '.join(param_parts)})"
 
         ref_mod = mod_by_name.get(ref.module_name)
@@ -157,12 +157,6 @@ class VamsWriter:
             return str(pval)
         if pval.prefixed_value is not None:
             return format_si_value(pval.prefixed_value)
-        if pval.string_value is not None:
-            return pval.string_value
-        if pval.expression is not None:
-            return pval.expression
-        if pval.int_value is not None:
-            return str(pval.int_value)
         return "0"
 
     def infer_port_order(

@@ -126,17 +126,16 @@ class VamsTransformer(Transformer[Token, Circuit]):
         return parse_parameter_number(str(items[0]))
 
     def pvalue_ident(self, items: list[Token]) -> ParameterValue:
-        return ParameterValue(string_value=str(items[0]))
+        return ParameterValue()
 
     def pvalue_string(self, items: list[Token]) -> ParameterValue:
-        raw = str(items[0]).strip("\"'")
-        return ParameterValue(string_value=raw)
+        return ParameterValue()
 
     def param_assign(self, items: list[Any]) -> tuple[str, ParameterValue]:
         name = str(items[0])
         value = items[1]
         if not isinstance(value, ParameterValue):
-            value = ParameterValue(string_value=str(value))
+            value = ParameterValue()
         return (name, value)
 
     def param_assign_list(self, items: list[Any]) -> list[tuple[str, ParameterValue]]:
@@ -173,33 +172,6 @@ class VamsTransformer(Transformer[Token, Circuit]):
     # ── Parameter / localparam ─────────────────────────────────────────
 
     def _coerce_value(self, ptype: str, pval: ParameterValue) -> ParameterValue:
-        """Coerce a ParameterValue to match the declared Verilog-AMS type."""
-        match ptype:
-            case "integer":
-                if pval.int_value is not None:
-                    return pval
-                if pval.prefixed_value is not None:
-                    return ParameterValue(
-                        int_value=int(pval.prefixed_value.double_value)
-                    )
-                if pval.string_value is not None:
-                    try:
-                        return ParameterValue(int_value=int(pval.string_value))
-                    except ValueError:
-                        return pval
-            case "string":
-                if pval.string_value is not None:
-                    return pval
-                if pval.prefixed_value is not None:
-                    return ParameterValue(
-                        string_value=str(pval.prefixed_value.double_value)
-                    )
-            case "real":
-                if pval.int_value is not None:
-                    return ParameterValue(
-                        prefixed_value=PrefixedValue(double_value=float(pval.int_value))
-                    )
-                return pval
         return pval
 
     def typed_parameter_decl(
@@ -257,13 +229,13 @@ class VamsTransformer(Transformer[Token, Circuit]):
         name = str(items[0])
         value = items[1]
         if not isinstance(value, ParameterValue):
-            value = ParameterValue(string_value=str(value))
+            value = ParameterValue()
         return (name, value)
 
     def positional_override(self, items: list[Any]) -> ParameterValue:
         v = items[0]
         if not isinstance(v, ParameterValue):
-            v = ParameterValue(string_value=str(v))
+            v = ParameterValue()
         return v
 
     def param_override(
@@ -362,7 +334,7 @@ class VamsTransformer(Transformer[Token, Circuit]):
         name = str(items[0])
         value = items[1]
         if not isinstance(value, ParameterValue):
-            value = ParameterValue(string_value=str(value))
+            value = ParameterValue()
         return (name, value)
 
     def nature_def(self, items: list[Any]) -> NatureData:
@@ -491,10 +463,9 @@ class VamsTransformer(Transformer[Token, Circuit]):
                 analog_block = self.analog_blocks[item.index]
 
         ports: list[Port] = []
-        for i, pn in enumerate(port_names):
+        for pn in port_names:
             ports.append(
                 Port(
-                    uid=i,
                     name=pn,
                     direction=port_dirs.get(pn, PortDirection.INOUT),
                     domain=SignalDomain.ELECTRICAL,
@@ -515,16 +486,17 @@ class VamsTransformer(Transformer[Token, Circuit]):
             add_port_to_net(net_map, port.name, "", port.name)
 
         for inst in instances:
-            param_overrides: dict[str, Parameter] = {}
+            params: list[Parameter] = []
             if inst.named_params:
-                param_overrides = {
-                    pname: Parameter(name=pname, default_value=pval)
+                params = [
+                    Parameter(name=pname, default_value=pval)
                     for pname, pval in inst.named_params.items()
-                }
+                ]
             elif inst.positional_params:
-                for pi, pv in enumerate(inst.positional_params):
-                    pname = f"p{pi}"
-                    param_overrides[pname] = Parameter(name=pname, default_value=pv)
+                params = [
+                    Parameter(name=f"p{pi}", default_value=pv)
+                    for pi, pv in enumerate(inst.positional_params)
+                ]
 
             if inst.named_ports:
                 for port_name, net_name in inst.named_ports.items():
@@ -537,7 +509,7 @@ class VamsTransformer(Transformer[Token, Circuit]):
                 ModuleReference(
                     name=inst.name,
                     module_name=inst.module_type,
-                    parameter_overrides=param_overrides,
+                    parameters=params,
                 )
             )
 
@@ -569,29 +541,27 @@ class VamsTransformer(Transformer[Token, Circuit]):
                     modules.append(mod)
                     ext_modules.update(ext)
             elif isinstance(item, NatureData):
-                props: dict[str, str] = {}
+                props: dict[str, str] = {"ext_kind": "nature"}
                 for k, v in item.attrs.items():
-                    if v.string_value is not None:
-                        props[f"nature_{k}"] = v.string_value
-                    elif v.prefixed_value is not None:
+                    if v.prefixed_value is not None:
                         from morphnet.netlist.value_utils import format_si_value
 
                         props[f"nature_{k}"] = format_si_value(v.prefixed_value)
+                    else:
+                        props[f"nature_{k}"] = ""
                 ext_modules[item.name] = ExternalModule(
                     name=item.name,
-                    domain="vams",
                     kind=ExternalModuleKind.NATURE,
                     properties=props,
                 )
             elif isinstance(item, DisciplineData):
-                props = {}
+                props = {"ext_kind": "discipline"}
                 for role, nature_name in item.natures.items():
                     props[f"discipline_{role}"] = nature_name
                 if item.domain:
                     props["discipline_domain"] = item.domain
                 ext_modules[item.name] = ExternalModule(
                     name=item.name,
-                    domain="vams",
                     kind=ExternalModuleKind.DISCIPLINE,
                     properties=props,
                 )
@@ -602,17 +572,15 @@ class VamsTransformer(Transformer[Token, Circuit]):
                 ]
                 ext_modules[item.name] = ExternalModule(
                     name=item.name,
-                    domain="vams",
-                    parameters=params,
                     kind=ExternalModuleKind.MODEL,
-                    properties={"model_type": item.base_type},
+                    parameters=params,
+                    properties={"ext_kind": "model", "model_type": item.base_type},
                 )
 
         top_module = modules[-1].name if modules else ""
 
         return Circuit(
             name="",
-            domain="vams",
             top_module=top_module,
             modules=modules,
             ext_modules=list(ext_modules.values()),

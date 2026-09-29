@@ -87,17 +87,7 @@ def parse_si_number(token: str) -> PrefixedValue:
 
 
 def parse_parameter_number(token: str) -> ParameterValue:
-    """Parse a numeric token into the most appropriate ParameterValue variant.
-
-    Whole integers (no decimal, no SI suffix, no exponent) return int_value.
-    Everything else delegates to parse_si_number and returns prefixed_value.
-    """
-    m = SI_NUMBER_RE.match(token)
-    if m is None:
-        raise ValueError(f"Not a valid SI number: {token!r}")
-    numeric_str, suffix = m.group(1), m.group(2)
-    if suffix is None and "." not in numeric_str and "e" not in numeric_str.lower():
-        return ParameterValue(int_value=int(numeric_str))
+    """Parse a numeric token into a ParameterValue with a PrefixedValue."""
     return ParameterValue(prefixed_value=parse_si_number(token))
 
 

@@ -50,7 +50,7 @@ M2 out in vss vss nch W=0.5u L=0.18u
         circuit = parse_xyce(text)
         refs = circuit.modules[0].module_references
         assert refs[0].module_name == "mosfet"
-        assert refs[0].model_name == "pch"
+        assert refs[0].properties.get("model_name") == "pch"
 
 
 class TestDirectives:

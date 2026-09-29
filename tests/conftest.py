@@ -53,7 +53,6 @@ def parameter_value_with_model_ref():
 @pytest.fixture
 def parameter(parameter_value_with_prefixed):
     return Parameter(
-        uid=42,
         name="width",
         default_value=parameter_value_with_prefixed,
         description="Waveguide width",
@@ -79,12 +78,10 @@ def port_reference():
 @pytest.fixture
 def port():
     return Port(
-        uid=7,
         name="o1",
         direction=PortDirection.OUTPUT,
         domain=SignalDomain.WAVEGUIDE,
         width=1,
-        cross_section="strip",
         properties={"layer": "1/0"},
     )
 
@@ -113,14 +110,13 @@ def bus(connection):
 
 
 @pytest.fixture
-def module_reference(parameter_value_with_prefixed):
+def module_reference():
     return ModuleReference(
         name="mmi_1",
         module_name="mmi1x2",
         class_name="MMI1x2",
-        parameter_values=[parameter_value_with_prefixed],
-        parameter_overrides={
-            "length": Parameter(
+        parameters=[
+            Parameter(
                 name="length",
                 default_value=ParameterValue(
                     prefixed_value=PrefixedValue(
@@ -128,7 +124,7 @@ def module_reference(parameter_value_with_prefixed):
                     )
                 ),
             )
-        },
+        ],
         properties={"technology": "siph"},
     )
 
@@ -136,7 +132,6 @@ def module_reference(parameter_value_with_prefixed):
 @pytest.fixture
 def module(port, parameter, model_interface, module_reference, connection, bus):
     return Module(
-        uid=1,
         name="top",
         class_name="TopLevel",
         ports=[port],
@@ -153,7 +148,6 @@ def module(port, parameter, model_interface, module_reference, connection, bus):
 def external_module(port, parameter):
     return ExternalModule(
         name="pd_model",
-        domain="electrical",
         ports=[port],
         parameters=[parameter],
         properties={"vendor": "Lumerical"},
@@ -164,7 +158,6 @@ def external_module(port, parameter):
 def circuit(module, external_module):
     return Circuit(
         name="mzi_circuit",
-        domain="photonics",
         top_module="top",
         modules=[module],
         ext_modules=[external_module],

@@ -12,7 +12,6 @@ R2 vout gnd 10k
 .end
 """
         circuit = parse_spice(text)
-        assert circuit.domain == "spice"
         assert circuit.top_module == "divider"
         assert len(circuit.modules) == 1
         assert len(circuit.ext_modules) == 1
@@ -51,7 +50,7 @@ R1 a b 10k
 """
         circuit = parse_spice(text)
         ref = circuit.modules[0].module_references[0]
-        param = ref.parameter_overrides["value"]
+        param = next(p for p in ref.parameters if p.name == "value")
         pv = param.default_value
         assert pv.prefixed_value is not None
         assert pv.prefixed_value.double_value == 10.0
@@ -69,7 +68,8 @@ C1 a b 100p
         circuit = parse_spice(text)
         ref = circuit.modules[0].module_references[0]
         assert ref.module_name == "capacitor"
-        pv = ref.parameter_overrides["value"].default_value
+        value_param = next(p for p in ref.parameters if p.name == "value")
+        pv = value_param.default_value
         assert pv.prefixed_value.prefix == SIPrefix.PICO
 
     def test_inductor(self) -> None:
@@ -93,9 +93,10 @@ M1 d g s b nch W=1u L=0.18u
         circuit = parse_spice(text)
         ref = circuit.modules[0].module_references[0]
         assert ref.module_name == "mosfet"
-        assert ref.model_name == "nch"
-        assert "W" in ref.parameter_overrides
-        assert "L" in ref.parameter_overrides
+        assert ref.properties.get("model_name") == "nch"
+        param_names = {p.name for p in ref.parameters}
+        assert "W" in param_names
+        assert "L" in param_names
 
     def test_subcircuit_instance(self) -> None:
         text = """\
@@ -168,7 +169,8 @@ M1 d g s b nch
         nch = next(e for e in circuit.ext_modules if e.name == "nch")
         level_param = next(p for p in nch.parameters if p.name == "level")
         assert level_param.default_value is not None
-        assert level_param.default_value.int_value == 49
+        assert level_param.default_value.prefixed_value is not None
+        assert level_param.default_value.prefixed_value.double_value == 49.0
 
     def test_param_statement(self) -> None:
         text = """\

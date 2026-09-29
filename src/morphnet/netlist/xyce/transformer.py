@@ -21,7 +21,7 @@ class XyceTransformer(SpiceTransformer):
         return items[0]
 
     def pvalue_expr(self, items: list[Token]) -> ParameterValue:
-        return ParameterValue(expression=str(items[0]))
+        return ParameterValue()
 
     def params_kw(self, items: list[Any]) -> None:
         return None

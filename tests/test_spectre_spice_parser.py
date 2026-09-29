@@ -10,7 +10,6 @@ R1 a b 1k
 .end
 """
         circuit = parse_spectre_spice(text)
-        assert circuit.domain == "spectre_spice"
         assert circuit.top_module == "test"
         assert len(circuit.modules) == 1
 
@@ -24,7 +23,7 @@ M1 d g s b nch W=1u L=0.18u
         circuit = parse_spectre_spice(text)
         ref = circuit.modules[0].module_references[0]
         assert ref.module_name == "mosfet"
-        assert ref.model_name == "nch"
+        assert ref.properties.get("model_name") == "nch"
 
 
 class TestMixedMode:
