@@ -18,9 +18,8 @@ from morphnet.morphnet_schema import (
 from morphnet.netlist.spice.writer import write_spice
 
 
-def make_port(uid: int, name: str) -> Port:
+def make_port(name: str) -> Port:
     return Port(
-        uid=uid,
         name=name,
         direction=PortDirection.INOUT,
         domain=SignalDomain.ELECTRICAL,
@@ -47,23 +46,22 @@ class TestResistorOutput:
     def test_basic_resistor(self) -> None:
         resistor = ExternalModule(
             name="resistor",
-            domain="spice",
-            ports=[make_port(0, "p"), make_port(1, "n")],
+            ports=[make_port("p"), make_port("n")],
             properties={"spice_prefix": "R"},
         )
         mod = Module(
             name="test",
-            ports=[make_port(0, "a"), make_port(1, "b")],
+            ports=[make_port("a"), make_port("b")],
             module_references=[
                 ModuleReference(
                     name="R1",
                     module_name="resistor",
-                    parameter_overrides={
-                        "value": Parameter(
+                    parameters=[
+                        Parameter(
                             name="value",
                             default_value=make_pv(10.0, SIPrefix.KILO),
                         )
-                    },
+                    ],
                 ),
             ],
             connections=[
@@ -73,7 +71,6 @@ class TestResistorOutput:
         )
         circuit = Circuit(
             name="test_circuit",
-            domain="spice",
             top_module="test",
             modules=[mod],
             ext_modules=[resistor],
@@ -89,38 +86,31 @@ class TestMosfetOutput:
     def test_mosfet_with_model(self) -> None:
         mosfet = ExternalModule(
             name="mosfet",
-            domain="spice",
             ports=[
-                make_port(0, "d"),
-                make_port(1, "g"),
-                make_port(2, "s"),
-                make_port(3, "b"),
+                make_port("d"),
+                make_port("g"),
+                make_port("s"),
+                make_port("b"),
             ],
             properties={"spice_prefix": "M"},
         )
         mod = Module(
             name="inv",
             ports=[
-                make_port(0, "in_"),
-                make_port(1, "out"),
-                make_port(2, "vdd"),
-                make_port(3, "vss"),
+                make_port("in_"),
+                make_port("out"),
+                make_port("vdd"),
+                make_port("vss"),
             ],
             module_references=[
                 ModuleReference(
                     name="M1",
                     module_name="mosfet",
-                    model_name="pch",
-                    parameter_overrides={
-                        "W": Parameter(
-                            name="W",
-                            default_value=make_pv(1.0, SIPrefix.MICRO),
-                        ),
-                        "L": Parameter(
-                            name="L",
-                            default_value=make_pv(0.18, SIPrefix.MICRO),
-                        ),
-                    },
+                    properties={"model_name": "pch"},
+                    parameters=[
+                        Parameter(name="W", default_value=make_pv(1.0, SIPrefix.MICRO)),
+                        Parameter(name="L", default_value=make_pv(0.18, SIPrefix.MICRO)),
+                    ],
                 ),
             ],
             connections=[
@@ -132,7 +122,6 @@ class TestMosfetOutput:
         )
         circuit = Circuit(
             name="test",
-            domain="spice",
             top_module="inv",
             modules=[mod],
             ext_modules=[mosfet],
@@ -145,11 +134,11 @@ class TestSubcircuitInstance:
     def test_x_instance(self) -> None:
         inner = Module(
             name="inner",
-            ports=[make_port(0, "p"), make_port(1, "q")],
+            ports=[make_port("p"), make_port("q")],
         )
         outer = Module(
             name="outer",
-            ports=[make_port(0, "a"), make_port(1, "b")],
+            ports=[make_port("a"), make_port("b")],
             module_references=[
                 ModuleReference(name="X1", module_name="inner"),
             ],
@@ -160,7 +149,6 @@ class TestSubcircuitInstance:
         )
         circuit = Circuit(
             name="test",
-            domain="spice",
             top_module="outer",
             modules=[inner, outer],
         )
@@ -172,7 +160,6 @@ class TestDirectiveOutput:
     def test_include(self) -> None:
         circuit = Circuit(
             name="test",
-            domain="spice",
             directives=[Directive(kind=DirectiveKind.INCLUDE, value="models.lib")],
         )
         output = write_spice(circuit)
@@ -181,76 +168,22 @@ class TestDirectiveOutput:
     def test_global(self) -> None:
         circuit = Circuit(
             name="test",
-            domain="spice",
             directives=[Directive(kind=DirectiveKind.GLOBAL, value="VDD VSS")],
         )
         output = write_spice(circuit)
         assert ".global VDD VSS" in output
 
     def test_model(self) -> None:
-        from morphnet.morphnet_schema import Parameter
-
         nch = ExternalModule(
             name="nch",
-            domain="spice",
             parameters=[
                 Parameter(name="level", default_value=make_pv(49.0)),
                 Parameter(name="vth0", default_value=make_pv(0.4)),
             ],
             properties={"model_type": "nmos"},
         )
-        circuit = Circuit(
-            name="test",
-            domain="spice",
-            ext_modules=[nch],
-        )
+        circuit = Circuit(name="test", ext_modules=[nch])
         output = write_spice(circuit)
         assert ".model nch nmos" in output
         assert "level=49" in output
         assert "vth0=0.4" in output
-
-
-class TestAllValueTypes:
-    def test_int_value_param(self) -> None:
-        nch = ExternalModule(
-            name="nch",
-            domain="spice",
-            parameters=[
-                Parameter(name="level", default_value=ParameterValue(int_value=49)),
-            ],
-            properties={"model_type": "nmos"},
-        )
-        circuit = Circuit(name="test", domain="spice", ext_modules=[nch])
-        output = write_spice(circuit)
-        assert "level=49" in output
-
-    def test_string_value_param(self) -> None:
-        nch = ExternalModule(
-            name="nch",
-            domain="spice",
-            parameters=[
-                Parameter(
-                    name="version",
-                    default_value=ParameterValue(string_value="4.7"),
-                ),
-            ],
-            properties={"model_type": "nmos"},
-        )
-        circuit = Circuit(name="test", domain="spice", ext_modules=[nch])
-        output = write_spice(circuit)
-        assert "version=4.7" in output
-
-    def test_expression_param(self) -> None:
-        mod = Module(
-            name="test",
-            ports=[make_port(0, "a"), make_port(1, "b")],
-            parameters=[
-                Parameter(
-                    name="r",
-                    default_value=ParameterValue(expression="1k+2k"),
-                ),
-            ],
-        )
-        circuit = Circuit(name="test", domain="spice", top_module="test", modules=[mod])
-        output = write_spice(circuit)
-        assert ".param r='1k+2k'" in output

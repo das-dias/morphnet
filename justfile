@@ -22,6 +22,8 @@ proto:
     # protoc generates bare imports for cross-proto deps; rewrite to fully-qualified
     find src/morphnet/morphnet_schema -name '*_pb2.py' -exec \
       sed -i '' 's/^import \([a-z_]*_pb2\)/import morphnet.morphnet_schema.\1/' {} +
+    find src/morphnet/morphnet_schema -name '*_pb2.pyi' -exec \
+      sed -i '' 's/^import \([a-z_]*_pb2\)/import morphnet.morphnet_schema.\1/' {} +
     touch src/morphnet/morphnet_schema/__init__.py
 
 # build package (compiles protos first)

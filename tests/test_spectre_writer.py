@@ -5,20 +5,19 @@ from morphnet.morphnet_schema import (
     Module,
     ModuleReference,
     Parameter,
-    ParameterValue,
     Port,
     PortDirection,
     PortReference,
     PrefixedValue,
     SignalDomain,
     SIPrefix,
+    ParameterValue,
 )
 from morphnet.netlist.spectre.writer import write_spectre
 
 
-def make_port(uid: int, name: str) -> Port:
+def make_port(name: str) -> Port:
     return Port(
-        uid=uid,
         name=name,
         direction=PortDirection.INOUT,
         domain=SignalDomain.ELECTRICAL,
@@ -45,11 +44,9 @@ class TestSpectreFormat:
     def test_subckt_with_parens(self) -> None:
         mod = Module(
             name="test",
-            ports=[make_port(0, "a"), make_port(1, "b")],
+            ports=[make_port("a"), make_port("b")],
         )
-        circuit = Circuit(
-            name="test", domain="spectre", top_module="test", modules=[mod]
-        )
+        circuit = Circuit(name="test", top_module="test", modules=[mod])
         output = write_spectre(circuit)
         assert "subckt test (a b)" in output
         assert "ends test" in output
@@ -57,23 +54,19 @@ class TestSpectreFormat:
     def test_instance_with_parens(self) -> None:
         resistor = ExternalModule(
             name="resistor",
-            domain="spectre",
-            ports=[make_port(0, "p"), make_port(1, "n")],
+            ports=[make_port("p"), make_port("n")],
             properties={"spice_prefix": "R"},
         )
         mod = Module(
             name="test",
-            ports=[make_port(0, "a"), make_port(1, "b")],
+            ports=[make_port("a"), make_port("b")],
             module_references=[
                 ModuleReference(
                     name="R1",
                     module_name="resistor",
-                    parameter_overrides={
-                        "r": Parameter(
-                            name="r",
-                            default_value=make_pv(10.0, SIPrefix.KILO),
-                        )
-                    },
+                    parameters=[
+                        Parameter(name="r", default_value=make_pv(10.0, SIPrefix.KILO))
+                    ],
                 ),
             ],
             connections=[
@@ -83,7 +76,6 @@ class TestSpectreFormat:
         )
         circuit = Circuit(
             name="test",
-            domain="spectre",
             top_module="test",
             modules=[mod],
             ext_modules=[resistor],
@@ -92,10 +84,10 @@ class TestSpectreFormat:
         assert "R1 (a b) resistor r=10k" in output
 
     def test_x_instance(self) -> None:
-        inner = Module(name="inner", ports=[make_port(0, "p"), make_port(1, "q")])
+        inner = Module(name="inner", ports=[make_port("p"), make_port("q")])
         outer = Module(
             name="outer",
-            ports=[make_port(0, "a"), make_port(1, "b")],
+            ports=[make_port("a"), make_port("b")],
             module_references=[ModuleReference(name="X1", module_name="inner")],
             connections=[
                 make_conn("a", "", "a", "X1", "p"),
@@ -104,7 +96,6 @@ class TestSpectreFormat:
         )
         circuit = Circuit(
             name="test",
-            domain="spectre",
             top_module="outer",
             modules=[inner, outer],
         )

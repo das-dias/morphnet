@@ -89,10 +89,11 @@ class TestDefaults:
         assert instance is not None
 
 
-class TestFrozen:
-    def test_immutability(self, prefixed_value):
-        with pytest.raises(ValidationError):
-            prefixed_value.double_value = 99.0
+class TestMutable:
+    def test_mutability(self, prefixed_value):
+        # Models are now mutable (frozen=False) to support in-place accumulation
+        prefixed_value.double_value = 99.0
+        assert prefixed_value.double_value == 99.0
 
 
 # ======================================================================
@@ -374,12 +375,12 @@ class TestCircuitIntegration:
     def test_proto_interop(self, circuit):
         proto_msg = circuit.to_proto()
         assert proto_msg.name == "mzi_circuit"
-        assert proto_msg.domain == "photonics"
+        # domain is Python-only (not in proto); proto_msg won't have it
         assert proto_msg.top_module == "top"
         assert len(proto_msg.modules) == 1
         assert len(proto_msg.ext_modules) == 1
         assert proto_msg.modules[0].name == "top"
-        assert proto_msg.modules[0].ports[0].name == "o1"
+        assert proto_msg.modules[0].terminals[0].name == "o1"
 
         restored = Circuit.from_proto(proto_msg)
         assert restored == circuit

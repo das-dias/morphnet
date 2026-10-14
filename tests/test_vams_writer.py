@@ -24,13 +24,11 @@ def make_pv(val: float, prefix: SIPrefix = SIPrefix.UNSPECIFIED) -> ParameterVal
 
 
 def make_port(
-    uid: int,
     name: str,
     direction: PortDirection = PortDirection.INOUT,
     discipline: str = "electrical",
 ) -> Port:
     return Port(
-        uid=uid,
         name=name,
         direction=direction,
         domain=SignalDomain.ELECTRICAL,
@@ -52,17 +50,14 @@ class TestModuleOutput:
     def test_simple_module(self) -> None:
         mod = Module(
             name="divider",
-            ports=[make_port(0, "vin"), make_port(1, "vout"), make_port(2, "gnd")],
+            ports=[make_port("vin"), make_port("vout"), make_port("gnd")],
             module_references=[
                 ModuleReference(
                     name="R1",
                     module_name="resistor",
-                    parameter_overrides={
-                        "r": Parameter(
-                            name="r",
-                            default_value=make_pv(10.0, SIPrefix.KILO),
-                        )
-                    },
+                    parameters=[
+                        Parameter(name="r", default_value=make_pv(10.0, SIPrefix.KILO))
+                    ],
                 ),
             ],
             connections=[
@@ -70,12 +65,7 @@ class TestModuleOutput:
                 make_conn("vout", "", "vout", "R1", "n"),
             ],
         )
-        circuit = Circuit(
-            name="",
-            domain="vams",
-            top_module="divider",
-            modules=[mod],
-        )
+        circuit = Circuit(name="", top_module="divider", modules=[mod])
         output = write_vams(circuit)
         assert "module divider" in output
         assert "endmodule" in output
@@ -89,7 +79,6 @@ class TestDirectiveOutput:
     def test_include(self) -> None:
         circuit = Circuit(
             name="",
-            domain="vams",
             directives=[Directive(kind=DirectiveKind.INCLUDE, value="models.vams")],
         )
         output = write_vams(circuit)
@@ -98,7 +87,6 @@ class TestDirectiveOutput:
     def test_timescale(self) -> None:
         circuit = Circuit(
             name="",
-            domain="vams",
             directives=[Directive(kind=DirectiveKind.TIMESCALE, value="1ns/1ps")],
         )
         output = write_vams(circuit)
@@ -109,7 +97,7 @@ class TestParameterOutput:
     def test_typed_parameter(self) -> None:
         mod = Module(
             name="test",
-            ports=[make_port(0, "a")],
+            ports=[make_port("a")],
             parameters=[
                 Parameter(
                     name="r",
@@ -118,36 +106,19 @@ class TestParameterOutput:
                 ),
             ],
         )
-        circuit = Circuit(name="", domain="vams", top_module="test", modules=[mod])
+        circuit = Circuit(name="", top_module="test", modules=[mod])
         output = write_vams(circuit)
         assert "parameter real r = 50" in output
-
-    def test_integer_parameter(self) -> None:
-        mod = Module(
-            name="test",
-            ports=[make_port(0, "a")],
-            parameters=[
-                Parameter(
-                    name="n",
-                    default_value=ParameterValue(int_value=4),
-                    properties={"type": "integer"},
-                ),
-            ],
-        )
-        circuit = Circuit(name="", domain="vams", top_module="test", modules=[mod])
-        output = write_vams(circuit)
-        assert "parameter integer n = 4" in output
 
 
 class TestNatureAndDisciplineOutput:
     def test_nature(self) -> None:
         ext = ExternalModule(
             name="Voltage",
-            domain="vams",
             kind=ExternalModuleKind.NATURE,
             properties={"nature_units": "V", "nature_access": "V"},
         )
-        circuit = Circuit(name="", domain="vams", ext_modules=[ext])
+        circuit = Circuit(name="", ext_modules=[ext])
         output = write_vams(circuit)
         assert "nature Voltage;" in output
         assert "endnature" in output
@@ -156,7 +127,6 @@ class TestNatureAndDisciplineOutput:
     def test_discipline(self) -> None:
         ext = ExternalModule(
             name="electrical",
-            domain="vams",
             kind=ExternalModuleKind.DISCIPLINE,
             properties={
                 "discipline_potential": "Voltage",
@@ -164,7 +134,7 @@ class TestNatureAndDisciplineOutput:
                 "discipline_domain": "continuous",
             },
         )
-        circuit = Circuit(name="", domain="vams", ext_modules=[ext])
+        circuit = Circuit(name="", ext_modules=[ext])
         output = write_vams(circuit)
         assert "discipline electrical;" in output
         assert "enddiscipline" in output

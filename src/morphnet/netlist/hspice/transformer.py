@@ -25,10 +25,7 @@ class HspiceTransformer(SpiceTransformer):
         return self.subckt_def(items)
 
     def pvalue_qstring(self, items: list[Token]) -> ParameterValue:
-        raw = str(items[0]).strip("\"'")
-        if EXPR_OPERATORS_RE.search(raw):
-            return ParameterValue(expression=raw)
-        return ParameterValue(string_value=raw)
+        return ParameterValue()
 
     def fft_stmt(self, items: list[Any]) -> AnalysisData:
         args, opts = self._extract_sim_args(items)

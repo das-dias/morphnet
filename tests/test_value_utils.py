@@ -78,24 +78,25 @@ class TestParseSiNumberExtended:
 
 
 class TestParseParameterNumber:
-    def test_integer_returns_int_value(self) -> None:
+    def test_integer_returns_prefixed_value(self) -> None:
         pv = parse_parameter_number("49")
-        assert pv.int_value == 49
-        assert pv.prefixed_value is None
+        assert pv.prefixed_value is not None
+        assert pv.prefixed_value.double_value == 49.0
 
-    def test_negative_integer_returns_int_value(self) -> None:
+    def test_negative_integer(self) -> None:
         pv = parse_parameter_number("-3")
-        assert pv.int_value == -3
+        assert pv.prefixed_value is not None
+        assert pv.prefixed_value.double_value == -3.0
 
-    def test_zero_returns_int_value(self) -> None:
+    def test_zero(self) -> None:
         pv = parse_parameter_number("0")
-        assert pv.int_value == 0
+        assert pv.prefixed_value is not None
+        assert pv.prefixed_value.double_value == 0.0
 
     def test_float_returns_prefixed_value(self) -> None:
         pv = parse_parameter_number("3.14")
         assert pv.prefixed_value is not None
         assert pv.prefixed_value.double_value == pytest.approx(3.14)
-        assert pv.int_value is None
 
     def test_suffixed_returns_prefixed_value(self) -> None:
         pv = parse_parameter_number("10k")
@@ -105,7 +106,6 @@ class TestParseParameterNumber:
     def test_scientific_returns_prefixed_value(self) -> None:
         pv = parse_parameter_number("1e-6")
         assert pv.prefixed_value is not None
-        assert pv.int_value is None
 
     def test_invalid_raises(self) -> None:
         with pytest.raises(ValueError, match="Not a valid SI number"):

@@ -4,7 +4,7 @@ from __future__ import annotations
 from enum import IntEnum
 from typing import ClassVar
 
-from pydantic import model_validator
+from pydantic import Field, model_validator
 
 from morphnet.morphnet_schema import circuit_pb2 as pb
 from morphnet.morphnet_schema._base import ProtoModel
@@ -16,6 +16,7 @@ __all__ = [
     "Connection",
     "Directive",
     "DirectiveKind",
+    "ExternalLibrary",
     "ExternalModule",
     "ExternalModuleKind",
     "ModelInterface",
@@ -121,27 +122,13 @@ class ParameterValue(ProtoModel):
 
     prefixed_value: PrefixedValue | None = None
     model_ref: ModelReference | None = None
-    string_value: str | None = None
-    expression: str | None = None
-    int_value: int | None = None
 
     @model_validator(mode="after")
     def _check_oneof(self) -> ParameterValue:
-        set_count = sum(
-            v is not None
-            for v in (
-                self.prefixed_value,
-                self.model_ref,
-                self.string_value,
-                self.expression,
-                self.int_value,
-            )
-        )
+        set_count = sum(v is not None for v in (self.prefixed_value, self.model_ref))
         if set_count > 1:
             raise ValueError(
-                "ParameterValue is a oneof: set exactly one of "
-                "'prefixed_value', 'model_ref', 'string_value', "
-                "'expression', 'int_value'"
+                "ParameterValue is a oneof: set exactly one of 'prefixed_value', 'model_ref'"
             )
         return self
 
@@ -149,7 +136,6 @@ class ParameterValue(ProtoModel):
 class Parameter(ProtoModel):
     _proto_type: ClassVar[type] = pb.Parameter
 
-    uid: int = 0
     name: str = ""
     default_value: ParameterValue | None = None
     description: str = ""
@@ -189,21 +175,19 @@ class ModelInterface(ProtoModel):
 
 
 class PortReference(ProtoModel):
-    _proto_type: ClassVar[type] = pb.PortReference
+    _proto_type: ClassVar[type] = pb.TerminalReference
 
     instance_name: str = ""
-    port_name: str = ""
+    port_name: str = Field(default="", alias="terminal_name")
 
 
 class Port(ProtoModel):
-    _proto_type: ClassVar[type] = pb.Port
+    _proto_type: ClassVar[type] = pb.Terminal
 
-    uid: int = 0
     name: str = ""
     direction: PortDirection = PortDirection.INOUT
     domain: SignalDomain = SignalDomain.UNSPECIFIED
     width: int = 0
-    cross_section: str = ""
     properties: dict[str, str] = {}
     discipline: str = ""
 
@@ -241,18 +225,15 @@ class ModuleReference(ProtoModel):
     module_name: str = ""
     class_name: str = ""
     parameters: list[Parameter] = []
-    parameter_overrides: dict[str, Parameter] = {}
     properties: dict[str, str] = {}
-    model_name: str = ""
 
 
 class Module(ProtoModel):
     _proto_type: ClassVar[type] = pb.Module
 
-    uid: int = 0
     name: str = ""
     class_name: str = ""
-    ports: list[Port] = []
+    ports: list[Port] = Field(default=[], alias="terminals")
     parameters: list[Parameter] = []
     model_interfaces: list[ModelInterface] = []
     module_references: list[ModuleReference] = []
@@ -261,16 +242,86 @@ class Module(ProtoModel):
     properties: dict[str, str] = {}
     directives: list[Directive] = []
 
+    def add_terminal(
+        self,
+        name: str,
+        *,
+        direction: PortDirection = PortDirection.INOUT,
+        domain: SignalDomain = SignalDomain.UNSPECIFIED,
+        width: int = 0,
+        discipline: str = "",
+        properties: dict[str, str] | None = None,
+    ) -> "Module":
+        self.ports.append(
+            Port(
+                name=name,
+                direction=direction,
+                domain=domain,
+                width=width,
+                discipline=discipline,
+                properties=properties or {},
+            )
+        )
+        return self
+
+    def add(self, *refs: ModuleReference) -> "Module":
+        self.module_references.extend(refs)
+        return self
+
+    def connect(
+        self,
+        net_name: str,
+        *endpoints: tuple[str, str],
+        domain: SignalDomain = SignalDomain.UNSPECIFIED,
+        properties: dict[str, str] | None = None,
+    ) -> "Module":
+        """
+        Create chained point-to-point connections on a named net.
+
+        Each endpoint is (instance_name, terminal_name).
+        instance_name='' refers to this module's own terminal (parent level).
+        endpoints [A, B, C] → Connection(A→B), Connection(B→C).
+        """
+        if len(endpoints) < 2:
+            raise ValueError(f"connect({net_name!r}): need ≥ 2 endpoints, got {len(endpoints)}")
+        props = properties or {}
+        for (si, sp), (ti, tp) in zip(endpoints, endpoints[1:]):
+            self.connections.append(
+                Connection(
+                    name=net_name,
+                    source=PortReference(instance_name=si, port_name=sp),
+                    target=PortReference(instance_name=ti, port_name=tp),
+                    domain=domain,
+                    properties=props,
+                )
+            )
+        return self
+
 
 class ExternalModule(ProtoModel):
     _proto_type: ClassVar[type] = pb.ExternalModule
 
     name: str = ""
-    domain: str = ""
-    ports: list[Port] = []
+    class_name: str = ""
+    library_name: str = ""
+    group_name: str = ""
+    ports: list[Port] = Field(default=[], alias="terminals")
     parameters: list[Parameter] = []
     properties: dict[str, str] = {}
     kind: ExternalModuleKind = ExternalModuleKind.UNSPECIFIED
+
+
+# ======================================================================
+# External libraries
+# ======================================================================
+
+
+class ExternalLibrary(ProtoModel):
+    _proto_type: ClassVar[type] = pb.ExternalLibrary
+
+    path: str = ""
+    model_type: str = ""
+    external_model_names: list[str] = []
 
 
 # ======================================================================
@@ -282,13 +333,27 @@ class Circuit(ProtoModel):
     _proto_type: ClassVar[type] = pb.Circuit
 
     name: str = ""
-    domain: str = ""
     top_module: str = ""
     modules: list[Module] = []
     ext_modules: list[ExternalModule] = []
     properties: dict[str, str] = {}
     directives: list[Directive] = []
     simulation: Simulation | None = None
+    libraries: dict[str, ExternalLibrary] = {}
+
+    def add(self, *modules: Module) -> "Circuit":
+        self.modules.extend(modules)
+        if not self.top_module and modules:
+            self.top_module = modules[0].name
+        return self
+
+    def add_ext(self, *ext: ExternalModule) -> "Circuit":
+        self.ext_modules.extend(ext)
+        return self
+
+    def add_library(self, name: str, lib: ExternalLibrary) -> "Circuit":
+        self.libraries[name] = lib
+        return self
 
 
 # Resolve forward references for the ParameterValue <-> ModelReference cycle

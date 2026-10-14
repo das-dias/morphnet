@@ -16,9 +16,8 @@ from morphnet.morphnet_schema import (
 from morphnet.netlist.xyce.writer import write_xyce
 
 
-def make_port(uid: int, name: str) -> Port:
+def make_port(name: str) -> Port:
     return Port(
-        uid=uid,
         name=name,
         direction=PortDirection.INOUT,
         domain=SignalDomain.ELECTRICAL,
@@ -46,23 +45,22 @@ class TestXyceFormat:
         """Xyce output matches SPICE format."""
         resistor = ExternalModule(
             name="resistor",
-            domain="spice",
-            ports=[make_port(0, "p"), make_port(1, "n")],
+            ports=[make_port("p"), make_port("n")],
             properties={"spice_prefix": "R"},
         )
         mod = Module(
             name="test",
-            ports=[make_port(0, "a"), make_port(1, "b")],
+            ports=[make_port("a"), make_port("b")],
             module_references=[
                 ModuleReference(
                     name="R1",
                     module_name="resistor",
-                    parameter_overrides={
-                        "value": Parameter(
+                    parameters=[
+                        Parameter(
                             name="value",
                             default_value=make_pv(10.0, SIPrefix.KILO),
                         )
-                    },
+                    ],
                 ),
             ],
             connections=[
@@ -72,7 +70,6 @@ class TestXyceFormat:
         )
         circuit = Circuit(
             name="test",
-            domain="spice",
             top_module="test",
             modules=[mod],
             ext_modules=[resistor],

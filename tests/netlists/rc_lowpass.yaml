@@ -1,52 +1,48 @@
 directives: []
-domain: spice
 ext_modules:
-- domain: spice
-  kind: 1
+- class_name: ''
+  group_name: ''
+  kind: 0
+  library_name: ''
   name: resistor
   parameters: []
   ports:
-  - cross_section: ''
-    direction: 0
+  - direction: 0
     discipline: ''
     domain: 1
     name: p
     properties: {}
-    uid: 0
     width: 0
-  - cross_section: ''
-    direction: 0
+  - direction: 0
     discipline: ''
     domain: 1
     name: n
     properties: {}
-    uid: 1
     width: 0
   properties:
     spice_prefix: R
-- domain: spice
-  kind: 1
+- class_name: ''
+  group_name: ''
+  kind: 0
+  library_name: ''
   name: capacitor
   parameters: []
   ports:
-  - cross_section: ''
-    direction: 0
+  - direction: 0
     discipline: ''
     domain: 1
     name: p
     properties: {}
-    uid: 0
     width: 0
-  - cross_section: ''
-    direction: 0
+  - direction: 0
     discipline: ''
     domain: 1
     name: n
     properties: {}
-    uid: 1
     width: 0
   properties:
     spice_prefix: C
+libraries: {}
 modules:
 - buses: []
   class_name: ''
@@ -95,74 +91,53 @@ modules:
   model_interfaces: []
   module_references:
   - class_name: ''
-    model_name: ''
     module_name: resistor
     name: R1
-    parameter_overrides:
-      value:
-        default_value:
-          expression: null
-          int_value: null
-          model_ref: null
-          prefixed_value:
-            double_value: 1.0
-            prefix: 15
-          string_value: null
-        description: ''
-        name: value
-        properties: {}
-        uid: 0
-    parameters: []
+    parameters:
+    - default_value:
+        model_ref: null
+        prefixed_value:
+          double_value: 1.0
+          prefix: 15
+      description: ''
+      name: value
+      properties: {}
     properties: {}
   - class_name: ''
-    model_name: ''
     module_name: capacitor
     name: C1
-    parameter_overrides:
-      value:
-        default_value:
-          expression: null
-          int_value: null
-          model_ref: null
-          prefixed_value:
-            double_value: 100.0
-            prefix: 7
-          string_value: null
-        description: ''
-        name: value
-        properties: {}
-        uid: 0
-    parameters: []
+    parameters:
+    - default_value:
+        model_ref: null
+        prefixed_value:
+          double_value: 100.0
+          prefix: 7
+      description: ''
+      name: value
+      properties: {}
     properties: {}
   name: rc_lowpass
   parameters: []
   ports:
-  - cross_section: ''
-    direction: 0
+  - direction: 0
     discipline: ''
     domain: 1
     name: in_
     properties: {}
-    uid: 0
     width: 0
-  - cross_section: ''
-    direction: 0
+  - direction: 0
     discipline: ''
     domain: 1
     name: out
     properties: {}
-    uid: 1
     width: 0
-  - cross_section: ''
-    direction: 0
+  - direction: 0
     discipline: ''
     domain: 1
     name: gnd
     properties: {}
-    uid: 2
     width: 0
   properties: {}
-  uid: 0
 name: ''
 properties: {}
 simulation: null

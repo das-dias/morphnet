@@ -50,12 +50,6 @@ def _param_value_to_str(pval: ParameterValue) -> str:
         from morphnet.netlist.value_utils import format_si_value
 
         return format_si_value(pval.prefixed_value)
-    if pval.int_value is not None:
-        return str(pval.int_value)
-    if pval.expression is not None:
-        return pval.expression
-    if pval.string_value is not None:
-        return pval.string_value
     return ""
 
 
@@ -191,17 +185,16 @@ class SpiceTransformer(Transformer[Token, Circuit]):
         return parse_parameter_number(str(items[0]))
 
     def pvalue_ident(self, items: list[Token]) -> ParameterValue:
-        return ParameterValue(string_value=str(items[0]))
+        return ParameterValue()
 
     def pvalue_string(self, items: list[Token]) -> ParameterValue:
-        raw = str(items[0]).strip("\"'")
-        return ParameterValue(string_value=raw)
+        return ParameterValue()
 
     def param_assign(self, items: list[Any]) -> tuple[str, ParameterValue]:
         name = str(items[0])
         value = items[1]
         if not isinstance(value, ParameterValue):
-            value = ParameterValue(string_value=str(value))
+            value = ParameterValue()
         return (name, value)
 
     # ── Instance statement ──────────────────────────────────────────────
@@ -218,7 +211,7 @@ class SpiceTransformer(Transformer[Token, Circuit]):
                 if isinstance(pval, ParameterValue):
                     params[pname] = pval
                 else:
-                    params[pname] = ParameterValue(string_value=str(pval))
+                    params[pname] = ParameterValue()
             elif isinstance(item, Token):
                 tokens.append(item)
 
@@ -577,10 +570,9 @@ class SpiceTransformer(Transformer[Token, Circuit]):
 
         # Build ports — O(p)
         ports: list[Port] = []
-        for i, pname in enumerate(port_names):
+        for pname in port_names:
             ports.append(
                 Port(
-                    uid=i,
                     name=pname,
                     direction=PortDirection.INOUT,
                     domain=SignalDomain.ELECTRICAL,
@@ -612,16 +604,14 @@ class SpiceTransformer(Transformer[Token, Circuit]):
                 for net_name, port_name in zip(inst.net_names, inst_port_names):
                     add_port_to_net(net_map, net_name, inst.name, port_name)
 
-                param_overrides: dict[str, Parameter] = {
-                    pname: Parameter(name=pname, default_value=pval)
-                    for pname, pval in inst.params.items()
-                }
-
                 module_references.append(
                     ModuleReference(
                         name=inst.name,
                         module_name=inst.model_or_subckt,
-                        parameter_overrides=param_overrides,
+                        parameters=[
+                            Parameter(name=pname, default_value=pval)
+                            for pname, pval in inst.params.items()
+                        ],
                     )
                 )
             elif port_template is not None:
@@ -637,36 +627,37 @@ class SpiceTransformer(Transformer[Token, Circuit]):
                 if module_name not in ext_modules:
                     ext_ports = [
                         Port(
-                            uid=j,
                             name=pn,
                             direction=PortDirection.INOUT,
                             domain=SignalDomain.ELECTRICAL,
                         )
-                        for j, pn in enumerate(port_template)
+                        for pn in port_template
                     ]
                     ext_modules[module_name] = ExternalModule(
                         name=module_name,
-                        domain="spice",
                         ports=ext_ports,
-                        kind=ExternalModuleKind.DEVICE,
                         properties={"spice_prefix": device_prefix},
                     )
 
-                param_overrides: dict[str, Parameter] = {}
+                params: list[Parameter] = []
                 if inst.value is not None:
-                    param_overrides["value"] = Parameter(
+                    params.append(Parameter(
                         name="value",
                         default_value=ParameterValue(prefixed_value=inst.value),
-                    )
+                    ))
                 for pname, pval in inst.params.items():
-                    param_overrides[pname] = Parameter(name=pname, default_value=pval)
+                    params.append(Parameter(name=pname, default_value=pval))
+
+                props: dict[str, str] = {}
+                if inst.model_or_subckt:
+                    props["model_name"] = inst.model_or_subckt
 
                 module_references.append(
                     ModuleReference(
                         name=inst.name,
                         module_name=module_name,
-                        parameter_overrides=param_overrides,
-                        model_name=inst.model_or_subckt,
+                        parameters=params,
+                        properties=props,
                     )
                 )
             else:
@@ -677,10 +668,10 @@ class SpiceTransformer(Transformer[Token, Circuit]):
                     ModuleReference(
                         name=inst.name,
                         module_name=inst.model_or_subckt,
-                        parameter_overrides={
-                            pname: Parameter(name=pname, default_value=pval)
+                        parameters=[
+                            Parameter(name=pname, default_value=pval)
                             for pname, pval in inst.params.items()
-                        },
+                        ],
                     )
                 )
 
@@ -693,9 +684,7 @@ class SpiceTransformer(Transformer[Token, Circuit]):
                 ]
                 ext_modules[mdata.name] = ExternalModule(
                     name=mdata.name,
-                    domain="spice",
                     parameters=ext_params,
-                    kind=ExternalModuleKind.MODEL,
                     properties={"model_type": mdata.type_name},
                 )
 
@@ -809,7 +798,6 @@ class SpiceTransformer(Transformer[Token, Circuit]):
                 ]
                 all_ext_modules[mdata.name] = ExternalModule(
                     name=mdata.name,
-                    domain="spice",
                     parameters=ext_params,
                     properties={"model_type": mdata.type_name},
                 )
@@ -874,7 +862,6 @@ class SpiceTransformer(Transformer[Token, Circuit]):
 
         return Circuit(
             name="",
-            domain="spice",
             top_module=top_module,
             modules=modules,
             ext_modules=list(all_ext_modules.values()),

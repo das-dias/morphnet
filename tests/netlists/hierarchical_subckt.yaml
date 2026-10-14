@@ -1,29 +1,27 @@
 directives: []
-domain: spice
 ext_modules:
-- domain: spice
-  kind: 1
+- class_name: ''
+  group_name: ''
+  kind: 0
+  library_name: ''
   name: resistor
   parameters: []
   ports:
-  - cross_section: ''
-    direction: 0
+  - direction: 0
     discipline: ''
     domain: 1
     name: p
     properties: {}
-    uid: 0
     width: 0
-  - cross_section: ''
-    direction: 0
+  - direction: 0
     discipline: ''
     domain: 1
     name: n
     properties: {}
-    uid: 1
     width: 0
   properties:
     spice_prefix: R
+libraries: {}
 modules:
 - buses: []
   class_name: ''
@@ -72,82 +70,59 @@ modules:
   model_interfaces: []
   module_references:
   - class_name: ''
-    model_name: ''
     module_name: resistor
     name: R1
-    parameter_overrides:
-      value:
-        default_value:
-          expression: null
-          int_value: null
-          model_ref: null
-          prefixed_value:
-            double_value: 1.0
-            prefix: 15
-          string_value: null
-        description: ''
-        name: value
-        properties: {}
-        uid: 0
-    parameters: []
+    parameters:
+    - default_value:
+        model_ref: null
+        prefixed_value:
+          double_value: 1.0
+          prefix: 15
+      description: ''
+      name: value
+      properties: {}
     properties: {}
   - class_name: ''
-    model_name: ''
     module_name: resistor
     name: R2
-    parameter_overrides:
-      value:
-        default_value:
-          expression: null
-          int_value: null
-          model_ref: null
-          prefixed_value:
-            double_value: 1.0
-            prefix: 15
-          string_value: null
-        description: ''
-        name: value
-        properties: {}
-        uid: 0
-    parameters: []
+    parameters:
+    - default_value:
+        model_ref: null
+        prefixed_value:
+          double_value: 1.0
+          prefix: 15
+      description: ''
+      name: value
+      properties: {}
     properties: {}
   name: inverter
   parameters: []
   ports:
-  - cross_section: ''
-    direction: 0
+  - direction: 0
     discipline: ''
     domain: 1
     name: in_
     properties: {}
-    uid: 0
     width: 0
-  - cross_section: ''
-    direction: 0
+  - direction: 0
     discipline: ''
     domain: 1
     name: out
     properties: {}
-    uid: 1
     width: 0
-  - cross_section: ''
-    direction: 0
+  - direction: 0
     discipline: ''
     domain: 1
     name: vdd
     properties: {}
-    uid: 2
     width: 0
-  - cross_section: ''
-    direction: 0
+  - direction: 0
     discipline: ''
     domain: 1
     name: vss
     properties: {}
-    uid: 3
     width: 0
   properties: {}
-  uid: 0
 - buses: []
   class_name: ''
   connections:
@@ -225,56 +200,43 @@ modules:
   model_interfaces: []
   module_references:
   - class_name: ''
-    model_name: ''
     module_name: inverter
     name: X1
-    parameter_overrides: {}
     parameters: []
     properties: {}
   - class_name: ''
-    model_name: ''
     module_name: inverter
     name: X2
-    parameter_overrides: {}
     parameters: []
     properties: {}
   name: buffer
   parameters: []
   ports:
-  - cross_section: ''
-    direction: 0
+  - direction: 0
     discipline: ''
     domain: 1
     name: a
     properties: {}
-    uid: 0
     width: 0
-  - cross_section: ''
-    direction: 0
+  - direction: 0
     discipline: ''
     domain: 1
     name: b
     properties: {}
-    uid: 1
     width: 0
-  - cross_section: ''
-    direction: 0
+  - direction: 0
     discipline: ''
     domain: 1
     name: vdd
     properties: {}
-    uid: 2
     width: 0
-  - cross_section: ''
-    direction: 0
+  - direction: 0
     discipline: ''
     domain: 1
     name: vss
     properties: {}
-    uid: 3
     width: 0
   properties: {}
-  uid: 0
 name: ''
 properties: {}
 simulation: null

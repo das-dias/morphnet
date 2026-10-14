@@ -97,5 +97,5 @@ C1 b c 100p
             for r1, r2 in zip(m1.module_references, m2.module_references):
                 assert r1.name == r2.name
                 assert r1.module_name == r2.module_name
-                assert r1.parameter_overrides == r2.parameter_overrides
+                assert r1.parameters == r2.parameters
                 assert r1.properties == r2.properties

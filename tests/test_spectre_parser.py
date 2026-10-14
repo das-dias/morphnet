@@ -10,7 +10,6 @@ R2 (vout gnd) resistor r=10k
 ends divider
 """
         circuit = parse_spectre(text)
-        assert circuit.domain == "spectre"
         assert circuit.top_module == "divider"
         assert len(circuit.modules) == 1
 
@@ -31,7 +30,7 @@ ends test
 """
         circuit = parse_spectre(text)
         ref = circuit.modules[0].module_references[0]
-        assert "r" in ref.parameter_overrides
+        assert any(p.name == "r" for p in ref.parameters)
 
 
 class TestDeviceTypes:
@@ -45,8 +44,8 @@ ends inv
         circuit = parse_spectre(text)
         refs = circuit.modules[0].module_references
         assert refs[0].module_name == "mosfet"
-        assert refs[0].model_name == "pch"
-        assert refs[1].model_name == "nch"
+        assert refs[0].properties.get("model_name") == "pch"
+        assert refs[1].properties.get("model_name") == "nch"
 
     def test_subcircuit_instance(self) -> None:
         text = """\

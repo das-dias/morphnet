@@ -8,10 +8,10 @@ import "simulation.proto";
 // Enums
 // ======================================================================
 
-enum PortDirection {
-    PORT_DIRECTION_INOUT  = 0;
-    PORT_DIRECTION_INPUT  = 1;
-    PORT_DIRECTION_OUTPUT = 2;
+enum TerminalDirection {
+    TERMINAL_DIRECTION_INOUT  = 0;
+    TERMINAL_DIRECTION_INPUT  = 1;
+    TERMINAL_DIRECTION_OUTPUT = 2;
 }
 
 enum SignalDomain {
@@ -48,12 +48,13 @@ enum SIPrefix {
     SI_PREFIX_QUETTA      = 24;
 }
 
+// Kept for backwards compatibility — no longer used on ExternalModule.
 enum ExternalModuleKind {
     EXTERNAL_MODULE_KIND_UNSPECIFIED = 0;
-    EXTERNAL_MODULE_KIND_DEVICE     = 1;
-    EXTERNAL_MODULE_KIND_MODEL      = 2;
-    EXTERNAL_MODULE_KIND_NATURE     = 3;
-    EXTERNAL_MODULE_KIND_DISCIPLINE = 4;
+    EXTERNAL_MODULE_KIND_DEVICE      = 1;
+    EXTERNAL_MODULE_KIND_MODEL       = 2;
+    EXTERNAL_MODULE_KIND_NATURE      = 3;
+    EXTERNAL_MODULE_KIND_DISCIPLINE  = 4;
 }
 
 enum DirectiveKind {
@@ -80,18 +81,16 @@ message ParameterValue {
     oneof value {
         PrefixedValue  prefixed_value = 1;
         ModelReference model_ref      = 2;
-        string         string_value   = 3;
-        string         expression     = 4;
-        int64          int_value      = 5;
     }
 }
 
 message Parameter {
-    uint32         uid           = 1;
-    string         name          = 10;
-    ParameterValue default_value = 20;
-    string         description   = 30;
-    map<string, string> properties = 40;
+    reserved 1;
+    reserved "uid";
+    string              name          = 10;
+    ParameterValue      default_value = 20;
+    string              description   = 30;
+    map<string, string> properties    = 40;
 }
 
 message Directive {
@@ -112,36 +111,38 @@ message ModelInterface {
 }
 
 message ModelReference {
-    string                       model_interface_name = 1;
-    map<string, ParameterValue>  arguments            = 10;
+    string                      model_interface_name = 1;
+    map<string, ParameterValue> arguments            = 10;
 }
 
 // ======================================================================
-// Ports and connections
+// Terminals and connections
 // ======================================================================
 
-message Port {
-    uint32        uid           = 1;
-    string        name          = 10;
-    PortDirection direction     = 20;
-    SignalDomain  domain        = 30;
-    uint32        width         = 40;
-    string        cross_section = 50;
+message Terminal {
+    reserved 1;
+    reserved "uid";
+    reserved 50;
+    reserved "cross_section";
+    string              name       = 10;
+    TerminalDirection   direction  = 20;
+    SignalDomain        domain     = 30;
+    uint32              width      = 40;
     map<string, string> properties = 60;
-    string        discipline    = 61;
+    string              discipline = 61;
 }
 
-message PortReference {
+message TerminalReference {
     string instance_name = 1;
-    string port_name     = 2;
+    string terminal_name = 2;
 }
 
 message Connection {
-    string        name   = 1;
-    PortReference source = 10;
-    PortReference target = 20;
-    SignalDomain  domain = 30;
-    uint32        weight = 40;
+    string              name       = 1;
+    TerminalReference   source     = 10;
+    TerminalReference   target     = 20;
+    SignalDomain        domain     = 30;
+    uint32              weight     = 40;
     map<string, string> properties = 50;
 }
 
@@ -158,20 +159,19 @@ message Bus {
 // ======================================================================
 
 message ModuleReference {
-    string                      name                = 1;
-    string                      module_name         = 2;
-    string                      class_name          = 3;
-    repeated Parameter          parameters          = 10;
-    map<string, Parameter> parameter_overrides = 20;
-    map<string, string>         properties          = 30;
-    string                      model_name          = 31;
+    string              name        = 1;
+    string              module_name = 2;
+    string              class_name  = 3;
+    repeated Parameter  parameters  = 10;
+    map<string, string> properties  = 30;
 }
 
 message Module {
-    uint32                    uid               = 1;
+    reserved 1;
+    reserved "uid";
     string                    name              = 2;
     string                    class_name        = 3;
-    repeated Port             ports             = 10;
+    repeated Terminal         terminals         = 10;
     repeated Parameter        parameters        = 20;
     repeated ModelInterface   model_interfaces  = 30;
     repeated ModuleReference  module_references = 40;
@@ -182,12 +182,26 @@ message Module {
 }
 
 message ExternalModule {
-    string              name       = 1;
-    string              domain     = 2;
-    repeated Port       ports      = 10;
-    repeated Parameter  parameters = 20;
-    map<string, string> properties = 30;
-    ExternalModuleKind  kind       = 31;
+    string              name         = 1;
+    string              class_name   = 3;
+    string              library_name = 4;
+    string              group_name   = 5;
+    repeated Terminal   terminals    = 10;
+    repeated Parameter  parameters   = 20;
+    map<string, string> properties   = 30;
+    ExternalModuleKind  kind         = 31;
+}
+
+// ======================================================================
+// External libraries
+// ======================================================================
+
+message ExternalLibrary {
+    reserved 1;
+    reserved "uid";
+    string          path                 = 2;
+    string          model_type           = 3;
+    repeated string external_model_names = 4;
 }
 
 // ======================================================================
@@ -195,12 +209,25 @@ message ExternalModule {
 // ======================================================================
 
 message Circuit {
-    string                   name        = 1;
-    string                   domain      = 2;
-    string                   top_module  = 3;
-    repeated Module          modules     = 10;
-    repeated ExternalModule  ext_modules = 20;
-    map<string, string>      properties  = 30;
-    repeated Directive       directives  = 31;
-    Simulation               simulation  = 40;
+    string                       name        = 1;
+    string                       top_module  = 3;
+    repeated Module              modules     = 10;
+    repeated ExternalModule      ext_modules = 20;
+    map<string, string>          properties  = 30;
+    repeated Directive           directives  = 31;
+    Simulation                   simulation  = 40;
+    map<string, ExternalLibrary> libraries   = 45;
+}
+
+// Kept for backwards compatibility.
+message CircuitReference {
+    string              circuit_name = 1;
+    map<string, string> properties   = 20;
+}
+
+// Kept for backwards compatibility.
+message Library {
+    string              name              = 1;
+    CircuitReference    circuit_reference = 20;
+    map<string, string> properties        = 30;
 }
